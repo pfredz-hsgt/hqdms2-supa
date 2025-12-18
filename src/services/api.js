@@ -332,6 +332,80 @@ export const enrollmentsAPI = {
       .single();
     if (error) handleError(error);
     return { data };
+  },
+
+  getYearlyCosts: async (params = {}) => {
+    // 1. Fetch all ACTIVE enrollments with relations
+    let query = supabase
+      .from('enrollments')
+      .select(`
+        *,
+        patients (name, ic_number),
+        drugs (name, department_id, departments(name))
+      `)
+      .eq('is_active', true);
+
+    if (params.department_id) {
+      // Filter by department (requires filtering on joined table, which Supabase supports if inner join, 
+      // but simpler to fetch all active and filter in JS for small datasets or use specific syntax)
+      // For now, let's filter in JS to be safe and simple given the join structure.
+    }
+
+    const { data: rawData, error } = await query;
+    if (error) handleError(error);
+
+    let enrollments = rawData.map(e => {
+      const costPerDay = parseFloat(e.cost_per_day || 0);
+      const yearCost = costPerDay * 365;
+
+      return {
+        ...e,
+        patient_name: e.patients?.name,
+        ic_number: e.patients?.ic_number,
+        drug_name: e.drugs?.name,
+        department_name: e.drugs?.departments?.name,
+        department_id: e.drugs?.department_id,
+        calculated_yearly_cost: yearCost
+      };
+    });
+
+    // 2. Filter by Department if requested
+    if (params.department_id) {
+      enrollments = enrollments.filter(e => e.department_id === parseInt(params.department_id));
+    }
+
+    // 3. Aggregate Data
+    const summary = {
+      totalCost: 0,
+      totalEnrollments: enrollments.length,
+      activeEnrollments: enrollments.length,
+      averageCostPerEnrollment: 0
+    };
+
+    const departmentTotals = {};
+
+    enrollments.forEach(e => {
+      summary.totalCost += e.calculated_yearly_cost;
+
+      const deptName = e.department_name || 'Unknown';
+      if (!departmentTotals[deptName]) {
+        departmentTotals[deptName] = { total: 0, count: 0 };
+      }
+      departmentTotals[deptName].total += e.calculated_yearly_cost;
+      departmentTotals[deptName].count += 1;
+    });
+
+    if (summary.totalEnrollments > 0) {
+      summary.averageCostPerEnrollment = summary.totalCost / summary.totalEnrollments;
+    }
+
+    return {
+      data: {
+        summary,
+        departmentTotals,
+        enrollments
+      }
+    };
   }
 };
 
@@ -396,20 +470,165 @@ export const reportsAPI = {
       return count;
     };
 
-    const totalDepts = await getCount('departments');
-    const totalDrugs = await getCount('drugs');
-    const totalPatients = await getCount('patients');
-    const activeEnrollments = await getCount('enrollments', { is_active: true });
+    try {
+      const today = new Date().toISOString().split('T')[0];
 
-    return {
-      data: {
-        total_departments: totalDepts,
-        total_drugs: totalDrugs,
-        total_patients: totalPatients,
-        active_enrollments: activeEnrollments,
-        // other stats can be calculated similarly or omitted/loaded lazily
+      // Run independent queries in parallel
+      const [
+        totalDepts,
+        totalDrugs,
+        totalPatients,
+        activeEnrollments,
+        drugsData,
+        activeCostsData,
+        recentRefillsData,
+        defaultersResult
+      ] = await Promise.all([
+        getCount('departments'),
+        getCount('drugs'),
+        getCount('patients'),
+        getCount('enrollments', { is_active: true }),
+        // For total quota sum
+        supabase.from('drugs').select('quota_number'),
+        // For total annual cost sum
+        supabase.from('enrollments').select('cost_per_day').eq('is_active', true),
+        // For recent refills count
+        supabase.from('enrollments').select('*', { count: 'exact', head: true }).eq('latest_refill_date', today),
+        // For potential defaulters count
+        enrollmentsAPI.getPotentialDefaulters()
+      ]);
+
+      // Calculate sums
+      const totalQuota = drugsData.data?.reduce((sum, d) => sum + (d.quota_number || 0), 0) || 0;
+      const totalAnnualCost = activeCostsData.data?.reduce((sum, e) => sum + ((e.cost_per_day || 0) * 365), 0) || 0;
+
+      return {
+        data: {
+          total_departments: totalDepts,
+          total_drugs: totalDrugs,
+          total_patients: totalPatients,
+          active_enrollments: activeEnrollments,
+          total_quota: totalQuota,
+          total_annual_cost: totalAnnualCost,
+          recent_refills: recentRefillsData.count || 0,
+          potential_defaulters: defaultersResult.data?.length || 0
+        }
+      };
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      return {
+        data: {
+          total_departments: 0,
+          total_drugs: 0,
+          total_patients: 0,
+          active_enrollments: 0,
+          total_quota: 0,
+          total_annual_cost: 0,
+          recent_refills: 0,
+          potential_defaulters: 0
+        }
+      };
+    }
+  },
+
+  getQuotaUtilization: async (params = {}) => {
+    // 1. Fetch all drugs with department info
+    let drugsQuery = supabase.from('drugs').select('*, departments(name)');
+
+    if (params.department_id) {
+      drugsQuery = drugsQuery.eq('department_id', params.department_id);
+    }
+
+    const { data: drugs, error: drugsError } = await drugsQuery;
+    if (drugsError) handleError(drugsError);
+
+    // 2. Fetch all active enrollments to count them
+    // Note: A more efficient way would be to group by drug_id in SQL if using RPC, 
+    // but here we do simple client aggregation.
+    const { data: enrollments, error: enrollError } = await supabase
+      .from('enrollments')
+      .select('drug_id')
+      .eq('is_active', true);
+
+    if (enrollError) handleError(enrollError);
+
+    // Count enrollments per drug
+    const enrollmentCounts = {};
+    enrollments.forEach(e => {
+      enrollmentCounts[e.drug_id] = (enrollmentCounts[e.drug_id] || 0) + 1;
+    });
+
+    // 3. Construct report data
+    const reportData = drugs.map(drug => {
+      const activeCount = enrollmentCounts[drug.id] || 0;
+      const utilization = drug.quota_number > 0 ? (activeCount / drug.quota_number) * 100 : 0;
+
+      // Determine status
+      let status = 'LOW';
+      if (activeCount >= drug.quota_number) status = 'FULL';
+      else if (utilization >= 90) status = 'HIGH';
+      else if (utilization >= 75) status = 'MEDIUM';
+
+      return {
+        department_name: drug.departments?.name,
+        drug_name: drug.name,
+        quota_number: drug.quota_number,
+        active_patients: activeCount,
+        available_slots: Math.max(0, drug.quota_number - activeCount),
+        utilization_percentage: Math.round(utilization),
+        status
+      };
+    });
+
+    return { data: reportData };
+  },
+
+  getDefaulters: async (params = {}) => {
+    // Reuse logic from enrollmentsAPI.getPotentialDefaulters but apply department filter
+    const { data: defaulters } = await enrollmentsAPI.getPotentialDefaulters();
+
+    let result = defaulters;
+    if (params.department_id) {
+      result = result.filter(d => d.drugs?.department_id === parseInt(params.department_id));
+    }
+
+    return { data: result };
+  },
+
+  getCostAnalysis: async (params = {}) => {
+    // Analyze active enrollments for cost distribution
+    // Similar to getYearlyCosts but grouped by drug/department with different stats
+
+    const { data: rawData } = await enrollmentsAPI.getYearlyCosts({ ...params });
+    // Reuse getYearlyCosts because it already fetches active enrollments and calculates yearly costs!
+    // We just need to regroup the 'enrollments' array it returns.
+
+    const enrollments = rawData.enrollments; // These are active enrollments
+
+    // Group by Drug ID
+    const drugStats = {};
+
+    enrollments.forEach(e => {
+      const drugId = e.drug_id;
+      if (!drugStats[drugId]) {
+        drugStats[drugId] = {
+          department_name: e.department_name,
+          drug_name: e.drug_name,
+          patient_count: 0,
+          total_annual_cost: 0,
+          unit_price: e.cost_per_day // Assumption: cost per day is proxy for unit price or we take avg
+        };
       }
-    };
+      drugStats[drugId].patient_count++;
+      drugStats[drugId].total_annual_cost += e.calculated_yearly_cost;
+    });
+
+    const reportData = Object.values(drugStats).map(stat => ({
+      ...stat,
+      avg_cost_per_patient: stat.patient_count > 0 ? stat.total_annual_cost / stat.patient_count : 0
+    }));
+
+    return { data: reportData };
   },
 
   exportExcel: async (params) => {

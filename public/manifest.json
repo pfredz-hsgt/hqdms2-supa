@@ -1,6 +1,6 @@
 {
-  "short_name": "HQDMS",
-  "name": "Hospital Quota Drug Management System",
+  "short_name": "QDMS-HS",
+  "name": "Quota Drug Management System",
   "icons": [
     {
       "src": "favicon.ico",
@@ -13,5 +13,3 @@
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
-
-
