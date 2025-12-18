@@ -946,10 +946,11 @@ const EnrollmentListPage = () => {
                     name="is_active"
                     label="Active"
                     valuePropName="checked"
+                    initialValue={true}
                     tooltip="Counts toward quota"
                     style={{ marginBottom: 0 }}
                   >
-                    <Switch size="default" defaultChecked checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} />
+                    <Switch size="default" checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} />
                   </Form.Item>
                 </div>
               </Col>

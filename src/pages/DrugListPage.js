@@ -286,7 +286,8 @@ const DrugListPage = () => {
       drug_id: drug.id,
       prescription_start_date: startDate,
       latest_refill_date: startDate,
-      cost_per_day: drug.price ? parseFloat(drug.price).toFixed(2) : undefined
+      cost_per_day: drug.price ? parseFloat(drug.price).toFixed(2) : undefined,
+      is_active: true
     });
     setEnrollModalVisible(true);
   };
@@ -2017,6 +2018,7 @@ const DrugListPage = () => {
                   name="is_active"
                   label="Active"
                   valuePropName="checked"
+                  initialValue={true}
                   tooltip="Counts toward quota"
                   style={{ marginBottom: 0 }}
                 >
