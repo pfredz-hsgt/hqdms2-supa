@@ -1,0 +1,109 @@
+/* Enhanced Drug Card Styles */
+
+.enhanced-drug-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enhanced-drug-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+
+
+.enhanced-drug-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.enhanced-drug-card:hover::before {
+  opacity: 1;
+}
+
+.card-header h3 {
+  transition: color 0.2s;
+}
+
+.enhanced-drug-card:hover .card-header h3 {
+  color: #3b82f6;
+}
+
+.quota-section {
+  position: relative;
+}
+
+.card-actions {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enhanced-drug-card:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.enroll-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.enroll-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.enroll-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.enroll-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.enroll-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Pulse animation for critical status */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .enhanced-drug-card {
+    margin-bottom: 12px;
+  }
+
+  .card-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

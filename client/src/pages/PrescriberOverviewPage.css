@@ -1,0 +1,40 @@
+/* Department Card Hover Effect */
+.department-card-hover {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.department-card-hover:hover {
+  border: 2px solid var(--dept-color) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Drug card hover effect */
+.drug-item-hover {
+  transition: all 0.2s ease;
+}
+
+.drug-item-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Header button hover effect */
+.ant-btn[style*="rgba(255, 255, 255, 0.2)"]:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+}
+
+/* Responsive adjustments for header */
+@media (max-width: 576px) {
+  .page-container .ant-card-body {
+    padding: 16px !important;
+  }
+
+  /* Hide header icon on mobile */
+  .header-icon {
+    display: none !important;
+  }
+}

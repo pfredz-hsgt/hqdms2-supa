@@ -1,0 +1,31 @@
+/* Department Card Hover Effects */
+
+.department-card {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .department-card:hover {
+    transform: translateY(-3px);
+    /* box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); */
+    box-shadow: 0 0 0 1px var(--dept-color) inset;
+
+  }
+
+
+  
+
+  .department-card:hover .department-name span {
+    color: #3b82f6;
+  }
+
+  .card-actions {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .department-card:hover .card-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }

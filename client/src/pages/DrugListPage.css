@@ -1,0 +1,21 @@
+.quota-title {
+  border-left: 8px solid var(--dept-color);
+  padding-left: 16px;
+  line-height: 1.4;
+  border-radius: 8px;
+  transition: box-shadow 0.25s ease;
+}
+
+/* Hover: glowing box shadow using deptColor */
+.quota-title:hover {
+  box-shadow: 0 0 0 1px var(--dept-color);
+}
+
+.quota-box {
+  border-radius: 8px;
+  transition: box-shadow 0.25s ease;
+}
+
+.quota-box:hover {
+  box-shadow: 0 0 0 1px var(--dept-color);
+}
