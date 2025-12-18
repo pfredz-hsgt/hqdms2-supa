@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, message, Typography, Space, Alert, Switch, Divider, Skeleton, Modal, Tabs } from 'antd'; // 1. Import Modal
 import { UserOutlined, LockOutlined, IdcardOutlined, UserAddOutlined, SettingOutlined, LoginOutlined } from '@ant-design/icons'; // 2. Import LoginOutlined
 import { useNavigate } from 'react-router-dom';
-import { authAPI } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
 
 const { Title, Text } = Typography;
@@ -11,7 +11,7 @@ const SettingsSwitch = ({ title, description, settingKey, loading, settings, onC
   if (loading || !settings) {
     return <Skeleton.Input active style={{ width: '100%', marginBottom: '16px' }} />;
   }
-  
+
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
       <div>
@@ -32,39 +32,36 @@ const AdminRegistrationPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  
+  const { register } = useAuth(); // Use register from AuthContext
+
   const { settings, loading: settingsLoading, updateSettings } = useSettings();
 
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [authModalVisible, setAuthModalVisible] = useState(true); 
+  const [authModalVisible, setAuthModalVisible] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
   const [authForm] = Form.useForm();
 
   const handleRegister = async (values) => {
-      setLoading(true);
-      try {
-         const response = await authAPI.register(values);
-         if (response.data.success) {
-            message.success('User registered successfully!');
-            // Reset form
-            form.resetFields();
-         } else {
-            message.error(response.data.message || 'Registration failed');
-         }
-      } catch (error) {
-         message.error(error.response?.data?.message || 'Registration failed. Please try again.');
-      } finally {
-         setLoading(false);
-      }
+    setLoading(true);
+    try {
+      const { email, password } = values;
+      await register(email, password);
+      message.success('User registered successfully!');
+      form.resetFields();
+    } catch (error) {
+      message.error(error.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSettingChange = async (key, value) => {
-      try {
-         await updateSettings({ [key]: value });
-         message.success('System setting updated!');
-      } catch (error) {
-         message.error('Failed to update setting. Please try again.');
-      }
+    try {
+      await updateSettings({ [key]: value });
+      message.success('System setting updated!');
+    } catch (error) {
+      message.error('Failed to update setting. Please try again.');
+    }
 
   };
 
@@ -88,7 +85,7 @@ const AdminRegistrationPage = () => {
     }
   };
 
-return (
+  return (
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -135,7 +132,7 @@ return (
             <Space style={{ width: '100%', justifyContent: 'space-between' }}>
               <Button
                 type="default"
-                onClick={() => navigate('/home')} 
+                onClick={() => navigate('/home')}
               >
                 Back to Home
               </Button>
@@ -193,16 +190,13 @@ return (
                     layout="vertical"
                     size="large"
                   >
-                    <Form.Item name="name" rules={[{ required: true, message: 'Please input the user\'s name!' }, { min: 5, message: 'Name must have at least 5 characters!' }]} >
-                      <Input prefix={<UserOutlined />} placeholder="Full Name" />
+                    <Form.Item name="email" rules={[{ required: true, message: 'Please input the Email!' }, { type: 'email', message: 'Please enter a valid email!' }]} >
+                      <Input prefix={<UserOutlined />} placeholder="Email" />
                     </Form.Item>
-                    <Form.Item name="ic_number" rules={[{ required: true, message: 'Please input the IC Number!' }, { pattern: /^\d+$/, message: 'IC Number must contain only numbers (no dashes or special characters)!' }]} >
-                      <Input prefix={<IdcardOutlined />} placeholder="IC Number" />
-                    </Form.Item>
-                    <Form.Item name="password" rules={[{ required: true, message: 'Please input a password!' }, { min: 4, message: 'Password must be at least 4 characters!' }]} >
+                    <Form.Item name="password" rules={[{ required: true, message: 'Please input a password!' }, { min: 6, message: 'Password must be at least 6 characters!' }]} >
                       <Input.Password prefix={<LockOutlined />} placeholder="Password" />
                     </Form.Item>
-                    <Form.Item name="confirmPassword" dependencies={['password']} rules={[{ required: true, message: 'Please confirm the password!' }, ({ getFieldValue }) => ({ validator(_, value) { if (!value || getFieldValue('password') === value) { return Promise.resolve(); } return Promise.reject(new Error('Passwords do not match!')); }, }), ]} >
+                    <Form.Item name="confirmPassword" dependencies={['password']} rules={[{ required: true, message: 'Please confirm the password!' }, ({ getFieldValue }) => ({ validator(_, value) { if (!value || getFieldValue('password') === value) { return Promise.resolve(); } return Promise.reject(new Error('Passwords do not match!')); }, }),]} >
                       <Input.Password prefix={<LockOutlined />} placeholder="Confirm Password" />
                     </Form.Item>
                     <Form.Item>
@@ -236,12 +230,12 @@ return (
                       Globally enable or disable creation of new items
                     </Text>
                   </div>
-                  
+
                   <SettingsSwitch title="Allow New Enrollments" description="Enable or disable adding new enrollments on all pages" settingKey="allowNewEnrollments" loading={settingsLoading} settings={settings} onChange={handleSettingChange} />
                   <SettingsSwitch title="Allow New Drugs" description="Enable or disable adding new drugs to the system" settingKey="allowNewDrugs" loading={settingsLoading} settings={settings} onChange={handleSettingChange} />
                   <SettingsSwitch title="Allow New Departments" description="Enable or disable adding new departments" settingKey="allowNewDepartments" loading={settingsLoading} settings={settings} onChange={handleSettingChange} />
                   <SettingsSwitch title="Allow New Patients" description="Enable or disable creating new patients" settingKey="allowNewPatients" loading={settingsLoading} settings={settings} onChange={handleSettingChange} />
-                  
+
                   <Button type="default" onClick={() => navigate('/login')} style={{ width: '100%', height: '40px', marginTop: '24px' }}>
                     Back to Home
                   </Button>
@@ -250,7 +244,7 @@ return (
             }
           ]}
         />
-      )} 
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { supabase } from '../supabaseClient';
 
 const AuthContext = createContext();
 
@@ -13,77 +13,88 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored authentication data on app load
-    const storedToken = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('authUser');
-
-    if (storedToken && storedUser) {
+    // Check active session on mount
+    const checkSession = async () => {
       try {
-        // 2. Decode the token to get its expiration time
-        const decodedToken = jwtDecode(storedToken);
-        const currentTime = Date.now() / 1000; // Get time in seconds
-
-        // 3. Check if the token is expired
-        if (decodedToken.exp < currentTime) {
-          console.log('Token is expired, logging out.');
-          logout(); // Token is expired, so log out
-        } else {
-          // Token is valid, set the state
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-        }
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
       } catch (error) {
-        console.error('Error parsing stored user data:', error);
-        logout();
+        console.error('Error checking session:', error);
+      } finally {
+        setLoading(false);
       }
-    }
-    setLoading(false);
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (userData, authToken) => {
-    setUser(userData);
-    setToken(authToken);
-    localStorage.setItem('authToken', authToken);
-    localStorage.setItem('authUser', JSON.stringify(userData));
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return data;
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('authUser');
+  const register = async (email, password, metadata = {}) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: metadata,
+      },
+    });
+    if (error) throw error;
+    return data;
+  };
+
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  };
+
+  const resetPassword = async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/#/reset-password',
+    });
+    if (error) throw error;
+  };
+
+  const updatePassword = async (newPassword) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
   };
 
   const isAuthenticated = () => {
-    // 4. Update isAuthenticated to also check the token
-    if (!token) {
-      return false;
-    }
-    try {
-      const decodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      return decodedToken.exp > currentTime; // Returns true if NOT expired
-    } catch (error) {
-      return false; // Token is invalid or expired
-    }
+    return !!user;
   };
 
   const value = {
     user,
-    token,
     login,
+    register,
     logout,
+    resetPassword,
+    updatePassword,
     isAuthenticated,
     loading
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

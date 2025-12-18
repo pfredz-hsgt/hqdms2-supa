@@ -339,7 +339,7 @@ const DrugListPage = () => {
       setEnrollModalVisible(false);
       enrollForm.resetFields();
       setDuration(0);
-      fetchData(); // Refresh the data to update quota counts
+      fetchData();
 
       // Refresh drug enrollments in the modal if it's open
       if (drugDetailsModalVisible && selectedDrug) {
@@ -840,8 +840,8 @@ const DrugListPage = () => {
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
                 <span>
-                  {searchText || selectedDepartment !== 'all' 
-                    ? 'No drugs found matching your filters' 
+                  {searchText || selectedDepartment !== 'all'
+                    ? 'No drugs found matching your filters'
                     : 'No drugs available'}
                 </span>
               }
@@ -896,8 +896,8 @@ const DrugListPage = () => {
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
                 description={
                   <span>
-                    {searchText || selectedDepartment !== 'all' 
-                      ? 'No drugs found matching your filters' 
+                    {searchText || selectedDepartment !== 'all'
+                      ? 'No drugs found matching your filters'
                       : 'No drugs available'}
                   </span>
                 }
@@ -1145,7 +1145,7 @@ const DrugListPage = () => {
         destroyOnHidden
         afterOpenChange={(open) => {
           if (open && patientSelectRef.current) {
-             setTimeout(() => {
+            setTimeout(() => {
               patientSelectRef.current.focus();
             }, 100);
           }
@@ -1168,7 +1168,7 @@ const DrugListPage = () => {
                 <div><strong>Available Slots:</strong> {selectedDrug.quota_number - selectedDrug.current_active_patients}</div>
                 <div><strong>Price:</strong> RM {Number(selectedDrug.price).toFixed(2)} per unit</div>
               </Col>
-                <Col span={24}>
+              <Col span={24}>
                 <div><strong>Remarks:</strong> {selectedDrug.remarks} </div>
               </Col>
             </Row>
@@ -1187,52 +1187,52 @@ const DrugListPage = () => {
 
           {/* Row 1: Patient Selection */}
           <Row gutter={[12, 12]}>
-          <Col xs={24} sm={24}>  
-          
-          <Form.Item
-            name="patient_id"
-            label="Patient"
-            rules={[{ required: true, message: 'Please select a patient' }]}
-            style={{ marginBottom: '0' }}
-          >
-            <Select
-              ref={patientSelectRef}
-              placeholder="Search patient..."
-              showSearch
-              value={patientSearchText ? undefined : enrollForm.getFieldValue('patient_id')}
-              onSearch={(value) => setPatientSearchText(value)}
-              filterOption={(input, option) => {
-                if (option.value === 'create_new') return true;
-                const patient = patients.find(p => p.id === option.value);
-                if (patient) {
-                  const searchText = `${patient.name} ${patient.ic_number}`.toLowerCase();
-                  return searchText.indexOf(input.toLowerCase()) >= 0;
-                }
-                return false;
-              }}
-              notFoundContent={
-                patientSearchText ? (
-                  <div style={{ textAlign: 'center', padding: '8px' }}>
-                    <div style={{ marginBottom: '8px', fontSize: '12px' }}>No patient found</div>
-                    <Button
-                      type="primary"
-                      size="small"
-                      onClick={() => setShowCreatePatient(true)}
-                    >
-                      Create New Patient
-                    </Button>
-                  </div>
-                ) : null
-              }
-            >
-              {patients.map(patient => (
-                <Option key={patient.id} value={patient.id}>
-                  {patient.name} ({patient.ic_number})
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          </Col></Row>
+            <Col xs={24} sm={24}>
+
+              <Form.Item
+                name="patient_id"
+                label="Patient"
+                rules={[{ required: true, message: 'Please select a patient' }]}
+                style={{ marginBottom: '0' }}
+              >
+                <Select
+                  ref={patientSelectRef}
+                  placeholder="Search patient..."
+                  showSearch
+                  value={patientSearchText ? undefined : enrollForm.getFieldValue('patient_id')}
+                  onSearch={(value) => setPatientSearchText(value)}
+                  filterOption={(input, option) => {
+                    if (option.value === 'create_new') return true;
+                    const patient = patients.find(p => p.id === option.value);
+                    if (patient) {
+                      const searchText = `${patient.name} ${patient.ic_number}`.toLowerCase();
+                      return searchText.indexOf(input.toLowerCase()) >= 0;
+                    }
+                    return false;
+                  }}
+                  notFoundContent={
+                    patientSearchText ? (
+                      <div style={{ textAlign: 'center', padding: '8px' }}>
+                        <div style={{ marginBottom: '8px', fontSize: '12px' }}>No patient found</div>
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => setShowCreatePatient(true)}
+                        >
+                          Create New Patient
+                        </Button>
+                      </div>
+                    ) : null
+                  }
+                >
+                  {patients.map(patient => (
+                    <Option key={patient.id} value={patient.id}>
+                      {patient.name} ({patient.ic_number})
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col></Row>
 
           {/* Row 2: Dose, Duration, Start Date */}
           <Row gutter={[12, 12]} style={{ marginTop: '12px' }}>
@@ -1506,7 +1506,7 @@ const DrugListPage = () => {
       </Modal>
 
       {/* Drug Details Modal */}
-                
+
       <Modal
         title={
           <div className="quota-title" style={{ '--dept-color': deptColor }}>

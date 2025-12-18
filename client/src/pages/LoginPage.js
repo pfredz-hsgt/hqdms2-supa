@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, resetPassword } = useAuth();
 
   // Redirect if already authenticated
   React.useEffect(() => {
@@ -25,26 +25,12 @@ const LoginPage = () => {
   const handleLogin = async (values) => {
     setLoading(true);
     try {
-      const response = await authAPI.login(values);
-      // Assuming backend sends { success: true, ... } on successful login
-      if (response.data.success) {
-        message.success('Login successful!');
-        login(response.data.user, response.data.token);
-        navigate('/');
-      } else {
-        // Handle cases where backend returns 200 OK but indicates failure
-        message.error(response.data.message || 'Login failed: Unexpected response structure.');
-      }
+      const { user, session } = await login(values.email, values.password);
+      message.success('Login successful!');
+      navigate('/');
     } catch (error) {
-      // Catch network errors or specific HTTP error codes (like 400, 401, 500)
-      if (error.response?.status === 401) {
-        // Specific message for invalid credentials
-        message.error('Invalid IC Number or Password.');
-      } else {
-        // Generic message for other errors
-        message.error(error.response?.data?.message || 'Login failed. Please check connection or try again.');
-      }
-      console.error('Login specific error:', error.response || error); // Log detailed error
+      message.error(error.message || 'Login failed.');
+      console.error('Login error:', error);
     } finally {
       setLoading(false);
     }
@@ -54,14 +40,10 @@ const LoginPage = () => {
   const handleResetPassword = async (values) => {
     setLoading(true);
     try {
-      const response = await authAPI.resetPassword(values);
-      if (response.data.success) {
-        message.success('Password has been reset! Your new password is the same as your IC Number.');
-      } else {
-        message.error(response.data.message || 'Failed to reset password');
-      }
+      await resetPassword(values.email);
+      message.success('Password reset email sent!');
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to reset password. Please try again.');
+      message.error(error.message || 'Failed to reset password.');
     } finally {
       setLoading(false);
     }
@@ -114,15 +96,15 @@ const LoginPage = () => {
               initialValues={{}}
             >
               <Form.Item
-                name="ic_number"
+                name="email"
                 rules={[
-                  { required: true, message: 'Please input your IC Number!' },
-                  { pattern: /^\d+$/, message: 'IC Number must contain only numbers (no dashes or special characters)!' }
+                  { required: true, message: 'Please input your Email!' },
+                  { type: 'email', message: 'Please enter a valid email!' }
                 ]}
               >
                 <Input
-                  prefix={<IdcardOutlined />}
-                  placeholder="IC Number"
+                  prefix={<UserOutlined />}
+                  placeholder="Email"
                 />
               </Form.Item>
 
@@ -152,38 +134,7 @@ const LoginPage = () => {
             </Form>
           </TabPane>
 
-          <TabPane tab="Reset Password" key="reset">
-            <Form
-              name="resetPassword"
-              onFinish={handleResetPassword}
-              layout="vertical"
-              size="large"
-            >
-              <Form.Item
-                name="ic_number"
-                rules={[
-                  { required: true, message: 'Please input your IC Number!' },
-                  { pattern: /^\d+$/, message: 'IC Number must contain only numbers (no dashes or special characters)!' }
-                ]}
-              >
-                <Input
-                  prefix={<IdcardOutlined />}
-                  placeholder="Enter your IC Number"
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  style={{ width: '100%', height: '40px' }}
-                >
-                  Reset Password
-                </Button>
-              </Form.Item>
-            </Form>
-          </TabPane>
+          {/* Removed Reset Password tab for now as it requires complex flow */}
         </Tabs>
 
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
