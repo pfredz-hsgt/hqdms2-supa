@@ -2,25 +2,26 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button, message } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { authAPI } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 const ChangePasswordModal = ({ visible, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const { updatePassword } = useAuth();
 
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const response = await authAPI.changePassword(values);
-      if (response.data.success) {
-        message.success('Password changed successfully!');
-        form.resetFields();
-        onSuccess();
-        onCancel();
-      } else {
-        message.error(response.data.message || 'Failed to change password');
-      }
+      // 3. Call Supabase via AuthContext
+      await updatePassword(values.newPassword);
+
+      message.success('Password changed successfully!');
+      form.resetFields();
+      onSuccess();
+      onCancel();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to change password. Please try again.');
+      // Supabase errors are usually in error.message
+      message.error(error.message || 'Failed to change password. Please try again.');
     } finally {
       setLoading(false);
     }

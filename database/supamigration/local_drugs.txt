@@ -1,0 +1,114 @@
+COPY public.drugs (id, name, department_id, quota_number, active_patients, price, calculation_method, remarks, created_at, updated_at) FROM stdin;
+5	Amlodipine + Valsartan 10mg/160mg Tab (EXFORGE)	6	20	0	0.48	daily	\N	2025-09-10 10:26:15.789556	2025-09-10 10:48:47.904629
+9	Cholestyramine Resin 4g	6	1	0	375.11	daily	DCM 01/24 - New Drug	2025-09-10 15:57:10.960483	2025-09-10 15:57:10.960483
+11	Dabigatran 150mg Cap (PRADAXA)	6	20	0	102.49	daily	DCM 02/24 - Update Quota 20 (+5)	2025-09-10 15:57:44.520162	2025-09-10 15:57:44.520162
+15	Febuxostat 80mg Tab	6	10	0	65.78	daily	DCM 01/24 - Update Quota 10	2025-09-10 16:03:11.994307	2025-09-10 16:03:11.994307
+16	Fenofibrate 145mg Tab	6	35	0	29.10	daily	DCM 01/25 - Update Quota 35	2025-09-10 16:03:31.205095	2025-09-10 16:03:31.205095
+17	Dutasteride 0.5mg and Tamsulosin 0.4mg Cap (DUODART)	7	25	0	147.90	daily	\N	2025-09-10 16:04:08.823288	2025-09-10 16:04:08.823288
+19	Solifenacin 5mg Tab (VESICARE)	7	2	0	80.70	daily	\N	2025-09-10 16:04:45.344254	2025-09-10 16:04:45.344254
+21	Atropine 0.01% Eye Drop	11	5	0	69.80	daily	\N	2025-09-10 16:10:19.171097	2025-09-10 16:10:19.171097
+22	Natamycin 5% Eye Drop	11	5	0	18.50	daily	\N	2025-09-10 16:10:29.013968	2025-09-10 16:10:29.013968
+7	Denosumab in 1.0mL solution 60mg/mL (PROLIA)	8	10	0	3.60	\N	UPDATE DCM 01/25 - QUOTA 10 PATIENT PER YEAR - DOSE 6 MONTHLY\nRM 648.05 / PFS	2025-09-10 11:08:26.436334	2025-11-20 09:50:40.195891
+26	Ivabradine 5mg Tab (CORALAN)	6	5	0	1.00	daily	\N	2025-09-17 16:00:00	2025-09-17 16:00:00
+27	Leflunomide 20mg Tab	6	40	0	1.00	daily	DCM 01/25 - Update Quota 40	2025-09-17 16:00:00	2025-09-17 16:00:00
+28	Mercaptopurine 50mg Tab	6	1	0	1.00	daily	DCM 02/23 - New Drug	2025-09-17 16:00:00	2025-09-17 16:00:00
+29	Mesalazine 1g Supp / Enema	6	3	0	1.00	daily	DCM 02/24 - Update Quota 3 (+1)	2025-09-17 16:00:00	2025-09-17 16:00:00
+30	Mesalazine 500mg MR Tab	6	8	0	1.00	daily	DCM 02/24 - Update Quota 8 (+3)	2025-09-17 16:00:00	2025-09-17 16:00:00
+33	Oxcarbazepine 300mg Tab	6	1	0	1.00	daily	DCM 02/23 - New Drug	2025-09-17 16:00:00	2025-09-17 16:00:00
+34	Oxybutynin Chloride 5 mg Tab	6	1	0	1.00	daily	DCM 01/24 - New Drug	2025-09-17 16:00:00	2025-09-17 16:00:00
+35	Pramipexole 0.125mg & 1mg Tab (SIFROL)	6	5	0	1.00	daily	DCM 01/25 - Update Quota 5	2025-09-17 16:00:00	2025-09-17 16:00:00
+37	Sacubitril / Valsartan 100mg Tab (ENTRESTO) 	6	20	0	1.00	daily	DCM 01/25 - Update Quota 20	2025-09-17 16:00:00	2025-09-17 16:00:00
+38	Ropinirole 0.25mg Tab	6	2	0	1.00	daily	DCM 02/24 - 1mg dah keluar, 0.25mg belum (?)	2025-09-17 16:00:00	2025-09-17 16:00:00
+41	Budesonide 9mg Prolonged Release Tablets	6	1	0	1.00	daily	DCM 01/25 - New Drug	2025-09-17 16:00:00	2025-09-17 16:00:00
+42	Anagrelide 0.5mg Capsule 	6	1	0	1.00	daily	\N	2025-09-17 16:00:00	2025-09-17 16:00:00
+46	Indacaterol 110mcg + Glycopyrronium 50mcg Inhaler (ULTIBRO)	6	100	0	1.00	daily	DCM 02/24 - Update Quota 100 (+10)	2025-09-17 16:00:00	2025-09-17 16:00:00
+48	Tiotropium + Olodaterol Inhalation (SPIOLTO)	6	70	0	1.00	daily	DCM 02/24 - Update Quota 70 (+10)	2025-09-17 16:00:00	2025-09-17 16:00:00
+49	Tiotropium 2.5mcg Inhalation (SPIRIVA)	6	10	0	1.00	daily	\N	2025-09-17 16:00:00	2025-09-17 16:00:00
+45	Insulin Aspart 30% Protaminated 70% (NOVOMIX)	6	10	0	0.08	daily	DCM 01/25 - Update Quota 10	2025-09-17 16:00:00	2025-10-01 11:46:48.504901
+32	KIV OPEN Mycophenolate Mofetil 500mg Tab	6	1	0	1.00	daily	DCM 02/24 - Add Neuro 1 Pt	2025-09-17 16:00:00	2025-10-01 10:25:09.90985
+54	Abacavir 300mg Tab	22	30	0	2.02	\N	DCM 02/24 - New Drug (Case Basis) || RM 121.00 / 60s	2025-09-17 16:00:00	2025-11-05 11:57:05.948827
+31	KIV OPEN Morphine Sulphate 30mg & 10mg PR Tablet	6	5	0	1.00	daily	\N	2025-09-17 16:00:00	2025-10-01 10:25:48.426992
+39	KIV OPEN Itopride Hydrochloride 50mg Tab (GANATON)	6	5	0	1.00	daily	DCM 01/25 - Add Medical 5	2025-09-17 16:00:00	2025-10-01 10:26:06.298467
+18	KIV OPEN Itopride Hydrochloride 50mg Tab (GANATON)	7	10	0	28.00	daily	\N	2025-09-10 16:04:22.609937	2025-10-01 10:26:12.338324
+36	KIV OPEN Rivaroxaban 20mg Tab (XARELTO)	6	30	0	1.00	daily	DCM 01/25 - Update Quota 30	2025-09-17 16:00:00	2025-10-01 10:26:26.003538
+13	KIV OPEN Entacapone 200mg Tab	6	2	0	170.00	daily	DCM 01/25 - Update Quota 2	2025-09-10 16:02:09.497533	2025-10-01 10:26:35.314891
+14	KIV OPEN Entecavir 0.5mg Tab	6	5	0	84.60	daily	DCM 02/24 - Update Quota 5 (+2)	2025-09-10 16:02:44.269287	2025-10-01 10:27:00.977782
+47	KIV OPEN Salmeterol + Fluticasone 50/500mcg Inhaler (SERETIDE)	6	8	0	1.00	daily	\N	2025-09-17 16:00:00	2025-10-01 10:27:12.433475
+6	KIV OPEN Bicalutamide 50mg Tab (CASODEX)	7	1	0	1.78	daily	\N	2025-09-10 11:07:44.287473	2025-10-01 10:27:24.235338
+12	Empagliflozin 25mg Tab (JARDIANCE)	6	80	0	1.73	daily	DCM 01/25 - Update Quota 80	2025-09-10 16:01:51.855123	2025-10-01 11:41:33.675821
+10	Clobazam 10mg Tab	6	3	0	0.66	daily	DCM 01/25 - Update Quota 3	2025-09-10 15:57:25.710229	2025-10-01 11:42:31.931747
+40	Levofloxacin 500mg Tab	6	5	0	1.42	daily	DCM 01/25 - Add Medical 5	2025-09-17 16:00:00	2025-10-01 11:44:11.104305
+43	Insulin Aspart 100iu/ml (NOVORAPID) (Medical)	6	35	0	0.06	daily	DCM 01/25 - Update Quota 35	2025-09-17 16:00:00	2025-10-01 11:46:14.333215
+44	Insulin Detemir 100iu/ml (LEVEMIR)	6	50	0	0.10	daily	DCM 01/25 - Update Quota 50	2025-09-17 16:00:00	2025-10-01 11:48:04.971506
+8	KIV OPEN Amantadine 100mg Cap	6	8	0	0.92	\N	Open Quota on DCM 02/25	2025-09-10 15:22:01.446284	2025-10-03 15:04:45.331539
+20	Propiverine 15mg Tab (MICTONORM)	7	25	0	1.82	\N	\N	2025-09-10 16:05:01.276395	2025-10-29 10:03:22.725553
+50	Clofazimine 100mg Cap	22	30	0	1.00	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:51:28.256646
+23	Hylo-Comod Eye Drop	11	30	0	1.00	\N	RM 30.00 per bot	2025-09-10 16:10:43.857598	2025-11-10 12:38:01.338192
+55	Abacavir Sulphate 600mg & Lamivudine 300mg Tab	22	30	0	1.00	\N	DCM 02/24 - New Drug (Case Basis)	2025-09-17 16:00:00	2025-10-29 14:51:02.252628
+51	Cycloserine 250mg Tab	22	30	0	10.40	\N	DCM 02/23 - Add Medical (Case Basis)	2025-09-17 16:00:00	2025-10-29 14:51:37.30016
+56	Dolutegravir 50mg Tab	22	30	0	1.00	\N	DCM 02/24 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:51:44.511374
+57	Efavirenz 200 mg Tab	22	30	0	1.00	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:51:50.263092
+59	Efavirenz 600mg, Emtricitabine 200mg,Tenofovir 300mg Tablet (TRUSTIVA)	22	30	0	1.00	\N	\N	2025-09-17 16:00:00	2025-10-29 14:51:55.519114
+52	Ethionamide 250mg Tab	22	30	0	1.00	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:52:01.992323
+60	Lamivudine 150mg Tab	22	30	0	1.00	\N	\N	2025-09-17 16:00:00	2025-10-29 14:52:08.288084
+53	Linezolid 600mg Tab	22	30	0	1.00	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:52:13.810092
+58	Lopinavir 200mg + Ritonavir 50mg Tab (KALETRA)	22	30	0	4.13	\N	DCM 02/24 - Add Medical Case Basis	2025-09-17 16:00:00	2025-10-29 14:52:19.466944
+24	Romosozumab 105 mg/1.17 ml pre-filled Syringe	8	2	0	47.20	\N	RM 1,415.90 per pfs, inject monthly	2025-09-10 16:11:00.947908	2025-11-04 16:22:44.453703
+25	Multivitamin Tablet	8	20	0	0.14	\N	For Discharged Patient Only -- RM 8.40 / 60's	2025-09-10 16:11:14.446751	2025-11-10 12:52:54.924567
+83	Quetiapine XR 50 mg // 200mg // 400mg Tab (SEROQUEL XR)	13	25	0	1.00	daily	DCM 01/24 - Update Quota 25	2025-09-17 16:00:00	2025-09-17 16:00:00
+84	Rivastigmine 1.5mg & 3mg Tab	13	10	0	1.00	daily	\N	2025-09-17 16:00:00	2025-09-17 16:00:00
+85	Rivastigmine 9.5mcg Patch (EXELON)	13	5	0	1.00	daily	\N	2025-09-17 16:00:00	2025-09-17 16:00:00
+86	Vortioxetine 10mg Tab (BRINTELLIX)	13	40	0	1.00	daily	DCM 01/25 - Update Quota 40	2025-09-17 16:00:00	2025-09-17 16:00:00
+87	Venlafaxine HCl 75 mg & 150 mg ER Capsule	13	10	0	1.00	daily	DCM 02/23 - New Drug (75mg)\nDCM 01/25 - New Drug (150mg)	2025-09-17 16:00:00	2025-09-17 16:00:00
+88	Valbenazine 40mg Capsule	13	1	0	1.00	daily	DCM 01/25 - New Drug	2025-09-17 16:00:00	2025-09-17 16:00:00
+94	Lopinavir 200mg + Ritonavir 50mg Tab (KALETRA)	10	1	0	4.13	daily	DCM 02/24 - Add Medical Case Basis	2025-09-17 16:00:00	2025-10-01 11:43:14.476886
+63	Tacrolimus 0.1% Ointment	21	5	0	1.00	daily	DCM 02/24 - New Drug	2025-09-17 16:00:00	2025-09-24 11:46:11.792045
+73	Amisulpiride 100 & 400mg Tab (SOLIAN)	13	40	0	1.40	\N	100MG RM42.05 / 30's -- 400MG RM156.52 / 30's	2025-09-17 16:00:00	2025-11-24 11:12:34.964914
+97	Cycloserine 250mg  Tab (Paeds)	10	60	0	10.40	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-27 09:35:02.040191
+80	KIV OPEN Mirtazapine 15mg Tab (REMERON)	13	50	0	1.00	daily	DCM 02/24 - Update Quota 50 (+20)	2025-09-17 16:00:00	2025-10-01 10:26:48.50692
+99	KIV OPEN Dipyridamole 75mg Tab	10	3	0	1.00	daily	DCM 02/24 - Update Quota 3 (+2)	2025-09-17 16:00:00	2025-10-01 10:27:33.427407
+102	KIV OPEN Levetiracetam 100 mg/ml Oral Solution	10	5	0	1.00	daily	DCM 01/25 - New Drug	2025-09-17 16:00:00	2025-10-01 10:27:44.265491
+62	KIV OPEN Isotretinoin 10 mg Cap	21	5	0	1.00	daily	DCM 02/24 - New Drug	2025-09-17 16:00:00	2025-10-01 10:27:54.626141
+64	KIV OPEN Acitretin 25 mg Capsule	21	1	0	1.00	daily	DCM 01/25 - New Drug	2025-09-17 16:00:00	2025-10-01 10:28:10.430577
+65	KIV OPEN Salicylic acid, Sulphur and Liquid Coal Tar Ointment	21	5	0	1.00	daily	DCM 01/25 - New Drug	2025-09-17 16:00:00	2025-10-01 10:28:25.737752
+112	Piracetam 1.2 g Tablet	15	5	0	1.14	\N	New Drug DCM 01/25 -- RM 22.80/20's	2025-09-17 16:00:00	2025-11-20 11:21:17.592063
+105	Iberet Folic	9	25	0	0.60	daily	DCM 01/19 - Add Nephro as quota	2025-09-17 16:00:00	2025-10-01 11:41:11.939639
+106	Sevelamer 800mg Tab	9	15	0	1.33	daily	DCM 02/24 - Update Quota 15 (+5)	2025-09-17 16:00:00	2025-10-01 11:41:22.518932
+109	Everolimus 0.25mg/0.75mg Tablet	9	3	0	22.09	\N	New Drug DCM 01/25 -- 0.75mg RM 1,325.40/60's -- 0.25mg: RM 450.00/60's	2025-09-17 16:00:00	2025-11-20 11:24:34.708274
+72	Agomelatine 25mg Tab (VALDOXAN) 	13	35	0	3.90	\N	UPDATED DCM 02/23 -- RM 108.36/ 28's	2025-09-17 16:00:00	2025-11-24 09:40:39.975808
+100	Cholecalciferol 1000 IU Tab	10	15	0	0.34	\N	!! REQUIRES KPK APPROVAL !!\nDCM 02/24 - Update Quota 15 (+10)	2025-09-17 16:00:00	2025-10-27 10:12:09.96811
+111	Mirabegron 50mg Prolonged Release Tablet	15	3	0	2.62	\N	New Drug DCM 01/25 -- RM 78.52/30's	2025-09-17 16:00:00	2025-11-20 11:21:44.472437
+95	Sildenafil 100mg Tab	10	10	0	2.00	daily	\N	2025-09-17 16:00:00	2025-10-01 11:43:24.508612
+96	Vigabatrin 500mg Tab	10	5	0	3.35	daily	\N	2025-09-17 16:00:00	2025-10-01 11:43:34.931373
+89	Desloratadine 5mg Tab (AERIUS)	14	30	0	0.22	\N	\N	2025-09-17 16:00:00	2025-10-27 10:14:05.156036
+92	Clobazam 10mg Tab (Paeds)	10	30	0	0.66	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:53:10.017436
+68	Human chorionic gonadotropin (HCG) 5000iu inj (PREGNYL) 	12	20	0	0.21	\N	Quota 20 pt per year (TO SUPPLY MAX 2 TIMES PER YEAR FOR EACH PT) RM 38.40 per vial - 1 year max 2 vial	2025-09-17 16:00:00	2025-11-04 10:12:57.411343
+93	Everolimus 5mg Tab	10	1	0	119.51	\N	RM 3,585.24 / 30's	2025-09-17 16:00:00	2025-11-11 12:34:10.104004
+71	Insulin aspart 100 iu/ml (NOVORAPID) (O&G)	12	3	0	0.06	daily	\N	2025-09-17 16:00:00	2025-10-01 11:46:22.60343
+104	Insulin Detemir 100iu/ml (LEVEMIR) (Paeds)	10	30	0	0.10	\N	(Case Basis)	2025-09-17 16:00:00	2025-10-29 14:52:44.072478
+98	Levofloxacin 500mg Tab (Paeds)	10	30	0	1.42	\N	DCM 02/23 - Update Case Basis	2025-09-17 16:00:00	2025-10-29 14:52:52.710816
+113	Insulin Glargine 300 IU/ 3 ml Inj	10	3	0	0.07	daily	DCM 02/25 - NEW DRUG	2025-10-01 12:19:03.049346	2025-10-01 12:19:03.049346
+110	KIV OPEN Amantadine 100mg Cap	15	2	0	0.92	\N	Updated DCM 01/25 -- RM 91.73 / 100's	2025-09-17 16:00:00	2025-11-20 11:22:09.606845
+107	Empagliflozin 25mg Tab (JARDIANCE) (Nephro)	9	10	0	1.73	\N	Updated DCM 02/24 -- RM 49.86 / 30's	2025-09-17 16:00:00	2025-11-20 11:22:56.930879
+74	Aripiprazole 400mg Injection	13	2	0	22.90	\N	UPDATED DCM 01/24 -- RM 686.50/vial	2025-09-17 16:00:00	2025-11-24 15:34:34.573441
+103	Insulin Aspart 100iu/ml (NOVORAPID) (Paeds)	10	30	0	0.06	\N	(Case Basis)	2025-09-17 16:00:00	2025-10-29 14:52:33.063657
+91	KIV OPEN Desloratadine 2.5mg/5ml Syrup	14	5	0	8.86	daily	DCM 02/24 - New Drug	2025-09-17 16:00:00	2025-10-03 12:03:07.818268
+61	Betamethasone/Salicylic Acid lotion	21	10	0	0.60	\N	DCM 02/24 - New Drug || BETAMETHASONE DIPROPIONATE 0.064% & SALICYLIC ACID 2% LOTION || RM 17.74/30ml	2025-09-17 16:00:00	2025-11-05 11:55:29.953303
+67	Etonogestrel 68 mg Implant (IMPLANON)	12	5	0	0.84	\N	Quota 5 patients per year (A single IMPLANON is inserted for 3 years) RM 304.35 per unit	2025-09-17 16:00:00	2025-11-04 10:11:13.136999
+70	Progesterone 100mg Capsule/Pessary	12	10	0	2.37	\N	DCM 01/24 - New Drug	2025-09-17 16:00:00	2025-10-27 12:01:09.928378
+66	Dienogest 2mg Tab	12	15	0	5.00	\N	DCM 01/24 - Update Quota 15 -- \n1 Tab OD	2025-09-17 16:00:00	2025-10-27 12:01:37.223724
+69	Levonorgestrel 52mg intrauterin (MIRENA) 	12	10	0	1.75	\N	Quota 10 pt per year (One MIRENA IUD is effective for 5 years) RM 637.08 per unit	2025-09-17 16:00:00	2025-11-04 10:10:54.19364
+101	Multivitamin Infant Drops (APPETON)	10	20	0	0.64	\N	DCM 02/23 - Add Outpatient -- RM 19.25/30ml\n	2025-09-17 16:00:00	2025-11-10 11:45:50.394608
+75	Asenapine 5mg & 10mg Sublingual Tab (SAPHRIS)	13	5	0	8.86	\N	[5MG & 10MG] RM 531.30 / 60's	2025-09-17 16:00:00	2025-11-24 15:37:11.529247
+78	Duloxetine 30mg & 60mg Cap (CYMBALTA)	13	15	0	0.97	\N	UPDATED DCM 02/23 -- 30MG RM 68.00/70's -- 60MG RM 86.00/100's	2025-09-17 16:00:00	2025-11-24 16:01:51.071324
+76	Atomoxetine HCl 40mg Cap (STRATTERA)	13	1	0	0.85	\N	NEW DRUG DCM 02/24 - 168.70/200's -- REQ IMPORT PERMIT	2025-09-17 16:00:00	2025-11-24 15:41:21.714383
+77	Brexpiprazole 4mg Film-Coated Tab	13	1	0	16.16	\N	NEW DRUG DCM 01/24 -- RM 452.58/28's -- KPK ITEM	2025-09-17 16:00:00	2025-11-24 15:42:31.473332
+79	Methylphenidate XR 18 & 36mg Tab (CONCERTA)	13	15	0	11.67	\N	UPDATED DCM 02/23 -- 18MG RM 224.50/30's -- 36MG RM 350.00/30's	2025-09-17 16:00:00	2025-11-24 16:03:00.73387
+81	Paliperidone 100mg // 150mg Injection (INVEGA SUSTENNA)	13	10	0	30.60	\N	UPDATED DCM 01/24 -- RM 917.67/pfs (Both 100 & 150mg) -- Monthly	2025-09-17 16:00:00	2025-11-24 16:09:08.020742
+82	Paliperidone ER 3mg // 6mg // 9mg Tab (INVEGA)	13	15	0	13.52	\N	UPDATED DCM 02/23 - 3MG & 6MG RM378.50/28's -- 9MG RM454.40/28's	2025-09-17 16:00:00	2025-11-24 16:21:59.265605
+90	Ciprofloxacin & Fluocinolone Ear Drops (CEFTRAXAL PLUS)	14	15	0	0.08	\N	RM 28.00 per bot -- \nInform DIS & KU OPD   @   Share dalam group jabatan jika ada kes (untuk follow up borang KPK (Patient Basis) -- \nDCM 02/23 - Update Quota 15 Patients PER YEAR\nIndication: For the treatment of acute otitis externa and acute otitis media in patients with tympanostomy tubes or tympanic membrane perforation. Administer 6 drops twice daily for 7 days.\n	2025-09-17 16:00:00	2025-11-11 10:10:40.699278
+115	(2026) Insulin Glargine 300IU/3ml Inj (Prefilled Pen) 	10	3	0	0.07	\N	DCM 02/25 -- RM 101.70 / 5 pens/300 iu	2025-11-11 10:55:54.004286	2025-11-11 10:55:54.004286
+116	(2026) Dolutegravir 50mg, Lamivudine 300mg, Tenofovir 300mg FC Tab	10	2	0	6.97	\N	DCM 02/25 -- RM 209.00 / 30 tab -- Dose 1 tab od	2025-11-11 10:57:25.840668	2025-11-11 10:57:25.840668
+117	(2026) Ciclosporin 0.5% Eye Drop	11	1	0	2.00	\N	DCM 02/25 -- Cost RM 729.60 / patient / year\n	2025-11-11 10:58:40.595169	2025-11-11 10:58:40.595169
+118	(2026) Diltiazem 100mg SR Cap	6	1	0	0.95	\N	DCM 02/25 -- RM 94.60 / 100's -- RM 345.29/ patient / year -- Dose 100mg od\n	2025-11-11 10:59:55.297681	2025-11-11 10:59:55.297681
+119	(2026) Calcipotriol 50mcg/g & Betamethasone Dipropionate 0.5mg/g Cutaneous Foam	21	2	0	6.40	\N	DCM 02/25 -- RM 233.50/60g -- RM 2,335.00/ patient / year\n\n	2025-11-11 11:01:15.246594	2025-11-11 11:01:15.246594

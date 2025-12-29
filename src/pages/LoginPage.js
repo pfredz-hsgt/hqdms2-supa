@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Tabs, message, Typography } from 'antd';
-import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, Tabs, message, Typography, Divider } from 'antd';
+import { LockOutlined, IdcardOutlined } from '@ant-design/icons'; // Changed UserOutlined to IdcardOutlined
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { authAPI } from '../services/api';
 import logo from '../img/logo.svg';
 
 const { Title, Text } = Typography;
@@ -13,7 +12,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
   const navigate = useNavigate();
-  const { login, isAuthenticated, resetPassword } = useAuth();
+  const { login, isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   React.useEffect(() => {
@@ -25,25 +24,22 @@ const LoginPage = () => {
   const handleLogin = async (values) => {
     setLoading(true);
     try {
-      const { user, session } = await login(values.email, values.password);
+      // 1. Transform IC Number into the internal "fake email" format
+      const fakeEmail = `${values.ic_number}@hqdms.com`;
+
+      // 2. Pass the transformed email to your auth context
+      await login(fakeEmail, values.password);
+
       message.success('Login successful!');
       navigate('/');
     } catch (error) {
-      message.error(error.message || 'Login failed.');
+      // Friendly error for local users
+      const errorMsg = error.message === 'Invalid login credentials'
+        ? 'Invalid IC Number or Password'
+        : error.message;
+
+      message.error(errorMsg || 'Login failed.');
       console.error('Login error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  const handleResetPassword = async (values) => {
-    setLoading(true);
-    try {
-      await resetPassword(values.email);
-      message.success('Password reset email sent!');
-    } catch (error) {
-      message.error(error.message || 'Failed to reset password.');
     } finally {
       setLoading(false);
     }
@@ -87,36 +83,38 @@ const LoginPage = () => {
         </div>
 
         <Tabs activeKey={activeTab} onChange={setActiveTab} centered>
-          <TabPane tab="Login" key="login">
+          <TabPane tab="Staff Login" key="login">
             <Form
               name="login"
               onFinish={handleLogin}
               layout="vertical"
               size="large"
-              initialValues={{}}
             >
+              {/* Changed from Email to IC Number */}
               <Form.Item
-                name="email"
+                name="ic_number"
+                label="IC Number"
                 rules={[
-                  { required: true, message: 'Please input your Email!' },
-                  { type: 'email', message: 'Please enter a valid email!' }
+                  { required: true, message: 'Please input your IC Number!' },
+                  { pattern: /^\d+$/, message: 'Please enter numbers only' },
+                  { min: 6, message: 'IC Number is too short' }
                 ]}
               >
                 <Input
-                  prefix={<UserOutlined />}
-                  placeholder="Email"
+                  prefix={<IdcardOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Example: 950101145566"
                 />
               </Form.Item>
 
               <Form.Item
                 name="password"
+                label="Password"
                 rules={[
-                  { required: true, message: 'Please input your password!' },
-                  { min: 4, message: 'Password must be at least 4 characters!' }
+                  { required: true, message: 'Please input your password!' }
                 ]}
               >
                 <Input.Password
-                  prefix={<LockOutlined />}
+                  prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                   placeholder="Password"
                 />
               </Form.Item>
@@ -126,15 +124,13 @@ const LoginPage = () => {
                   type="primary"
                   htmlType="submit"
                   loading={loading}
-                  style={{ width: '100%', height: '40px' }}
+                  style={{ width: '100%', height: '40px', marginTop: '10px' }}
                 >
-                  Login
+                  Sign In
                 </Button>
               </Form.Item>
             </Form>
           </TabPane>
-
-          {/* Removed Reset Password tab for now as it requires complex flow */}
         </Tabs>
 
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
