@@ -81,7 +81,7 @@ const AdminRegistrationPage = () => {
 
   const handleAuth = (values) => {
     setAuthLoading(true);
-    if (values.username === 'admin' && values.password === 'admin') {
+    if (values.password === 'admin') {
       setTimeout(() => {
         message.success('Access Granted');
         setIsAuthorized(true);
@@ -90,7 +90,7 @@ const AdminRegistrationPage = () => {
       }, 500);
     } else {
       setTimeout(() => {
-        message.error('Incorrect Username or Password');
+        message.error('Incorrect Admin Password');
         authForm.resetFields(['password']);
         setAuthLoading(false);
       }, 500);
@@ -116,15 +116,12 @@ const AdminRegistrationPage = () => {
         centered
         footer={null}
       >
-        <Text type="secondary" style={{ marginBottom: '24px', display: 'block' }}>
-          This page is restricted to Administrator only.
+        <Text type="secondary" style={{ marginBottom: '24px', display: 'block', textAlign: 'center' }}>
+          Please enter the admin password to proceed.
         </Text>
         <Form form={authForm} onFinish={handleAuth} layout="vertical">
-          <Form.Item name="username" label="Username" rules={[{ required: true }]}>
-            <Input prefix={<UserOutlined />} placeholder="Username" />
-          </Form.Item>
-          <Form.Item name="password" label="Password" rules={[{ required: true }]}>
-            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+          <Form.Item name="password" label="Admin Password" rules={[{ required: true }]}>
+            <Input.Password autoFocus prefix={<LockOutlined />} placeholder="********" />
           </Form.Item>
           <Form.Item>
             <Space style={{ width: '100%', justifyContent: 'space-between' }}>
@@ -164,6 +161,7 @@ const AdminRegistrationPage = () => {
                     onFinish={handleRegister}
                     layout="vertical"
                     size="large"
+                    className="compact-form"
                   >
                     {/* FULL NAME */}
                     <Form.Item
@@ -223,7 +221,7 @@ const AdminRegistrationPage = () => {
                   <SettingsSwitch title="Allow New Departments" description="Enable or disable adding new departments" settingKey="allowNewDepartments" loading={settingsLoading} settings={settings} onChange={handleSettingChange} />
                   <SettingsSwitch title="Allow New Patients" description="Enable or disable creating new patients" settingKey="allowNewPatients" loading={settingsLoading} settings={settings} onChange={handleSettingChange} />
                   <Divider />
-                  <Button type="default" onClick={() => navigate('/')} style={{ width: '100%' }}>
+                  <Button type="default" size="large" onClick={() => navigate('/')} style={{ width: '100%' }}>
                     Back to Home
                   </Button>
                 </div>

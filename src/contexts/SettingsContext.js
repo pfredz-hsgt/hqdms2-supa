@@ -70,8 +70,8 @@ export const SettingsProvider = ({ children }) => {
     fetchSettings, // Expose fetchSettings
   };
 
-  // Show a full-page loader while settings are loading
-  if (loading) {
+  // Show a full-page loader only while the initial settings are loading
+  if (loading && !settings) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <Spin size="large" />

@@ -70,11 +70,12 @@ const UserProfile = () => {
       label: 'Change Password',
       onClick: handleChangePassword,
     },
-    // {
-    //   key: '/regist',
-    //   icon: <UserOutlined />,
-    //   label: 'New Registration',
-    //   onClick: handleMenuClick,    },
+    {
+      key: '/regist',
+      icon: <UserOutlined />,
+      label: 'New Registration',
+      onClick: handleMenuClick,
+    },
     {
       type: 'divider',
     },

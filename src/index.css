@@ -448,15 +448,32 @@ code {
   padding: var(--space-sm) !important;
 }
 
-/* Form Elements */
+/* Form Elements*/
 .form-item {
-  margin-bottom: var(--space-md) !important;
+  margin-bottom: var(--space-xs) !important;
 }
 
 .form-label {
   font-weight: var(--font-weight-medium) !important;
   color: var(--text-primary) !important;
   margin-bottom: var(--space-xs) !important;
+}
+
+.ant-form-item-vertical .ant-form-item-label {
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+:where(.ant-form-item.ant-form-item-vertical) {
+  margin-bottom: var(--space-xs);
+}
+
+.compact-form .ant-form-item {
+  margin-bottom: 8px !important;
+}
+
+.reset-form .ant-form-item {
+  margin-bottom: 0px !important;
 }
 
 /* Table System */
@@ -828,20 +845,21 @@ kbd {
 }
 
 .ant-table-tbody>tr>td {
-border-top: 1px solid transparent;
-border-bottom: 1px solid transparent; 
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
-.ant-table-tbody > tr:hover > td {
-  background-color: #f1fbff !important; 
+.ant-table-tbody>tr:hover>td {
+  background-color: #f1fbff !important;
 }
 
 .ant-table-tbody>tr:hover>td:first-child {
   border-left: 4px solid #3b82f6;
 }
-.ant-table-tbody > tr:hover > td {
+
+.ant-table-tbody>tr:hover>td {
   border-top: 1px solid #3b82f6;
-  border-bottom: 1px solid #3b82f6; 
+  border-bottom: 1px solid #3b82f6;
 }
 
 .ant-table-tbody>tr:hover>td:last-child {

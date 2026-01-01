@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Tabs, message, Typography, Divider } from 'antd';
-import { LockOutlined, IdcardOutlined } from '@ant-design/icons'; // Changed UserOutlined to IdcardOutlined
+import { Form, Input, Button, Card, Tabs, message, Typography, Divider, Modal, Checkbox } from 'antd';
+import { LockOutlined, IdcardOutlined, ExclamationCircleOutlined } from '@ant-design/icons'; // Changed UserOutlined to IdcardOutlined
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import logo from '../img/logo.svg';
@@ -12,7 +12,10 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, resetPasswordToIC } = useAuth();
+  const [resetModalVisible, setResetModalVisible] = useState(false);
+  const [resetForm] = Form.useForm();
+  const [agreementChecked, setAgreementChecked] = useState(false);
 
   // Redirect if already authenticated
   React.useEffect(() => {
@@ -42,6 +45,44 @@ const LoginPage = () => {
       console.error('Login error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResetClick = () => {
+    setResetModalVisible(true);
+    setAgreementChecked(false);
+    resetForm.resetFields();
+  };
+
+  const onResetSubmit = async () => {
+    try {
+      const values = await resetForm.validateFields();
+
+      if (!agreementChecked) {
+        message.error('You must agree that this is your own IC number');
+        return;
+      }
+
+      Modal.confirm({
+        title: 'Confirm Password Reset',
+        centered: true,
+        icon: <ExclamationCircleOutlined />,
+        content: 'Are you sure you want to reset your password?',
+        onOk: async () => {
+          try {
+            setLoading(true);
+            await resetPasswordToIC(values.ic_number);
+            message.success('Password has been reset successfully.');
+            setResetModalVisible(false);
+          } catch (error) {
+            message.error(error.message || 'Failed to reset password');
+          } finally {
+            setLoading(false);
+          }
+        },
+      });
+    } catch (error) {
+      // Form validation error
     }
   };
 
@@ -89,6 +130,7 @@ const LoginPage = () => {
               onFinish={handleLogin}
               layout="vertical"
               size="large"
+              className="compact-form"
             >
               {/* Changed from Email to IC Number */}
               <Form.Item
@@ -119,7 +161,7 @@ const LoginPage = () => {
                 />
               </Form.Item>
 
-              <Form.Item>
+              <Form.Item style={{ marginBottom: 2 }}>
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -127,6 +169,12 @@ const LoginPage = () => {
                   style={{ width: '100%', height: '40px', marginTop: '10px' }}
                 >
                   Sign In
+                </Button>
+              </Form.Item>
+
+              <Form.Item style={{ textAlign: "center" }}>
+                <Button type="link" onClick={handleResetClick} style={{ paddingLeft: 0 }}>
+                  Reset Password
                 </Button>
               </Form.Item>
             </Form>
@@ -147,6 +195,42 @@ const LoginPage = () => {
           </Link>
         </div>
       </Card>
+
+      <Modal
+        title="Reset Password"
+        open={resetModalVisible}
+        onCancel={() => setResetModalVisible(false)}
+        centered
+        width={450}
+        footer={[
+          <Button key="cancel" onClick={() => setResetModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={onResetSubmit}>
+            Reset Password
+          </Button>,
+        ]}
+      >
+        <Form form={resetForm} layout="vertical" className="reset-form">
+          <Form.Item
+            name="ic_number"
+            label="Username / IC Number"
+            rules={[
+              { required: true, message: 'Please input your IC Number!' },
+              { pattern: /^\d+$/, message: 'Please enter numbers only' },
+              { min: 6, message: 'IC Number is too short' }
+            ]}
+          >
+            <Input prefix={<IdcardOutlined />} placeholder="Enter your IC Number" />
+          </Form.Item>
+
+          <Form.Item>
+            <Checkbox checked={agreementChecked} onChange={(e) => setAgreementChecked(e.target.checked)}>
+              I hereby declare that the IC number is mine
+            </Checkbox>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

@@ -72,6 +72,15 @@ export const AuthProvider = ({ children }) => {
     if (error) throw error;
   };
 
+  const resetPasswordToIC = async (icNumber) => {
+    // Calls a backend RPC function to secure reset
+    const { data, error } = await supabase.rpc('reset_password_to_ic', {
+      ic_number: icNumber
+    });
+    if (error) throw error;
+    return data;
+  };
+
   const updatePassword = async (newPassword) => {
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) throw error;
@@ -87,6 +96,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     resetPassword,
+    resetPasswordToIC,
     updatePassword,
     isAuthenticated,
     loading
