@@ -18,26 +18,30 @@ export const SettingsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Fetch settings when the app loads
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await settingsAPI.get();
-        setSettings(response.data);
-      } catch (error) {
-        console.error('Failed to load app settings:', error);
-        // Set default settings if fetch fails
-        setSettings({
-          allowNewEnrollments: true,
-          allowNewDrugs: true,
-          allowNewDepartments: true,
-          allowNewPatients: true,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSettings();
+  // Fetch settings function
+  const fetchSettings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await settingsAPI.get();
+      setSettings(response.data);
+    } catch (error) {
+      console.error('Failed to load app settings:', error);
+      // Set default settings if fetch fails
+      setSettings({
+        allowNewEnrollments: true,
+        allowNewDrugs: true,
+        allowNewDepartments: true,
+        allowNewPatients: true,
+      });
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  // Fetch settings when the app loads
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   // Function to update settings both in state and on the backend
   const updateSettings = useCallback(async (newSetting) => {
@@ -63,6 +67,7 @@ export const SettingsProvider = ({ children }) => {
     settings,
     loading,
     updateSettings,
+    fetchSettings, // Expose fetchSettings
   };
 
   // Show a full-page loader while settings are loading

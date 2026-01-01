@@ -673,8 +673,18 @@ export const reportsAPI = {
 export const settingsAPI = {
   get: async () => {
     const { data, error } = await supabase.from('settings').select('*').single();
-    // If table doesn't exist or empty, return default
-    if (error) return { data: {} };
+    if (error) {
+      console.error('Settings fetch error:', error);
+      // Return defaults instead of empty object to prevent switches showing false
+      return {
+        data: {
+          allowNewEnrollments: true,
+          allowNewDrugs: true,
+          allowNewDepartments: true,
+          allowNewPatients: true
+        }
+      };
+    }
     return { data };
   },
   update: async (data) => {

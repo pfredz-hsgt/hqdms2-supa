@@ -33,11 +33,16 @@ const AdminRegistrationPage = () => {
   const [form] = Form.useForm();
   const { register } = useAuth();
 
-  const { settings, loading: settingsLoading, updateSettings } = useSettings();
+  const { settings, loading: settingsLoading, updateSettings, fetchSettings } = useSettings();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [authModalVisible, setAuthModalVisible] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
   const [authForm] = Form.useForm();
+
+  // Fetch settings on mount
+  React.useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   // --- UPDATED HANDLER FOR OPTION 1 ---
   const handleRegister = async (values) => {
@@ -184,7 +189,7 @@ const AdminRegistrationPage = () => {
                     {/* PASSWORD */}
                     <Form.Item
                       name="password"
-                      label="Initial Password"
+                      label="Password"
                       rules={[{ required: true, message: 'Please input a password!' }, { min: 6, message: 'Min 6 characters' }]}
                     >
                       <Input.Password prefix={<LockOutlined />} placeholder="Password" />
@@ -194,8 +199,13 @@ const AdminRegistrationPage = () => {
                       <Button type="primary" htmlType="submit" loading={loading} style={{ width: '100%', marginTop: '10px' }} icon={<UserAddOutlined />}>
                         Register New User
                       </Button>
+                      <Button type="default" onClick={() => navigate('/')} style={{ width: '100%', marginTop: '10px' }}>
+                        Back to Home
+                      </Button>
                     </Form.Item>
+
                   </Form>
+
                 </div>
               )
             },
