@@ -412,9 +412,55 @@ export const enrollmentsAPI = {
 // --- Departments API ---
 export const departmentsAPI = {
   getAll: async () => {
-    const { data, error } = await supabase.from('departments').select('*').order('name');
-    if (error) handleError(error);
-    return { data };
+    // Fetch departments
+    const { data: departments, error: deptError } = await supabase
+      .from('departments')
+      .select('*')
+      .order('name');
+
+    if (deptError) handleError(deptError);
+
+    // Fetch all drugs to count per department
+    const { data: drugs, error: drugsError } = await supabase
+      .from('drugs')
+      .select('id, department_id');
+
+    if (drugsError) handleError(drugsError);
+
+    // Fetch all active enrollments to count per department
+    const { data: enrollments, error: enrollError } = await supabase
+      .from('enrollments')
+      .select('drug_id')
+      .eq('is_active', true);
+
+    if (enrollError) handleError(enrollError);
+
+    // Create a map of drug_id to department_id
+    const drugToDept = {};
+    const drugCountByDept = {};
+
+    drugs.forEach(drug => {
+      drugToDept[drug.id] = drug.department_id;
+      drugCountByDept[drug.department_id] = (drugCountByDept[drug.department_id] || 0) + 1;
+    });
+
+    // Count enrollments per department
+    const enrollmentCountByDept = {};
+    enrollments.forEach(enrollment => {
+      const deptId = drugToDept[enrollment.drug_id];
+      if (deptId) {
+        enrollmentCountByDept[deptId] = (enrollmentCountByDept[deptId] || 0) + 1;
+      }
+    });
+
+    // Attach counts to departments
+    const enrichedDepartments = departments.map(dept => ({
+      ...dept,
+      drug_count: drugCountByDept[dept.id] || 0,
+      total_enrollments: enrollmentCountByDept[dept.id] || 0
+    }));
+
+    return { data: enrichedDepartments };
   },
 
   getById: async (id) => {
