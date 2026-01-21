@@ -10,23 +10,18 @@ import {
   Alert,
   Space,
   Divider,
-  Tooltip,
-  Skeleton,
-  Empty
+  Skeleton
 } from 'antd';
 import {
   SearchOutlined,
   MedicineBoxOutlined,
   UserOutlined,
   FileTextOutlined,
-  DashboardOutlined,
   ClockCircleOutlined,
-  FileExclamationOutlined,
-  DollarOutlined
+  FileExclamationOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { reportsAPI } from '../services/api';
-import { useDebounce } from '../hooks/useDebounce';
 import CountUp from 'react-countup';
 import logo from '../img/logo2.svg';
 

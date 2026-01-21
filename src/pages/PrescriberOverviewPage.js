@@ -23,14 +23,10 @@ import {
   UserOutlined,
   BankOutlined,
   SearchOutlined,
-  ReloadOutlined,
-  CheckCircleOutlined,
-  WarningOutlined,
-  CloseCircleOutlined
+  ReloadOutlined
 } from '@ant-design/icons';
 import { drugsAPI, departmentsAPI, enrollmentsAPI } from '../services/api';
 import { useDebounce } from '../hooks/useDebounce';
-import dayjs from 'dayjs';
 import './MediaWidth.css';
 import './PrescriberOverviewPage.css';
 import '../components/EnhancedDrugCard.css';
@@ -125,11 +121,7 @@ const PrescriberOverviewPage = () => {
     }
   };
 
-  const getQuotaColor = (utilization) => {
-    if (utilization >= 90) return '#ff4d4f';
-    if (utilization >= 75) return '#faad14';
-    return '#52c41a';
-  };
+
 
   const getDepartmentColor = (deptName) => {
     if (!deptName) return '#D3D3D3'; // Default color (light gray)
@@ -168,12 +160,6 @@ const PrescriberOverviewPage = () => {
     if (percentage >= 80) return '#faad14';
     if (percentage >= 50) return '#1890ff';
     return '#52c41a';
-  };
-
-  const getStatusIcon = (utilization) => {
-    if (utilization >= 90) return <CloseCircleOutlined />;
-    if (utilization >= 70) return <WarningOutlined />;
-    return <CheckCircleOutlined />;
   };
 
   const handleRefresh = async () => {

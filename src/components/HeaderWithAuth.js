@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import UserProfile from './UserProfile';
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
-import logo from '../img/logo3.svg';
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -20,7 +19,7 @@ const HeaderWithAuth = () => {
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
         return;
       }
-      
+
       // Press ? to show shortcuts
       if (event.key === '?' && !event.shiftKey && !event.ctrlKey && !event.metaKey) {
         event.preventDefault();
@@ -35,8 +34,8 @@ const HeaderWithAuth = () => {
   }, []);
 
   return (
-    <Header style={{ 
-      background: '#fff', 
+    <Header style={{
+      background: '#fff',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
       display: 'flex',
       alignItems: 'center',
@@ -56,7 +55,7 @@ const HeaderWithAuth = () => {
           {location.pathname === '/reports' && 'Reports'}
         </Title>
       </Space>
-      
+
       <Space>
         <div style={{ color: '#666', fontSize: '12px', marginRight: '16px' }}>
           <span style={{ '@media (min-width: 768px)': { display: 'inline' } }}>
@@ -73,7 +72,7 @@ const HeaderWithAuth = () => {
         </Tooltip>
         <UserProfile />
       </Space>
-      
+
       <KeyboardShortcutsModal
         visible={shortcutsVisible}
         onClose={() => setShortcutsVisible(false)}

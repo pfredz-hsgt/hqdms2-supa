@@ -1,11 +1,8 @@
 import React from 'react';
-import { Card, Progress, Tag, Space, Tooltip } from 'antd';
+import { Card, Progress, Tag, Space } from 'antd';
 import {
   MedicineBoxOutlined,
-  UserOutlined,
-  CheckCircleOutlined,
-  WarningOutlined,
-  CloseCircleOutlined
+  UserOutlined
 } from '@ant-design/icons';
 import './EnhancedDrugCard.css';
 
@@ -39,13 +36,6 @@ const EnhancedDrugCard = ({ drug, onClick, onEnroll }) => {
     if (utilization >= 70) return '#f59e0b'; // Orange - Warning
     if (utilization >= 50) return '#3b82f6'; // Blue - Moderate
     return '#10b981'; // Green - Good
-  };
-
-  // Get status icon
-  const getStatusIcon = () => {
-    if (utilization >= 90) return <CloseCircleOutlined />;
-    if (utilization >= 70) return <WarningOutlined />;
-    return <CheckCircleOutlined />;
   };
 
   // Calculate available slots

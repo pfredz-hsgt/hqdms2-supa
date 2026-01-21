@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Card, 
-  Input, 
-  Button, 
-  Typography, 
-  Table, 
-  Space, 
-  DatePicker, 
-  message, 
+import {
+  Card,
+  Input,
+  Button,
+  Typography,
+  Table,
+  Space,
+  message,
   Alert,
   Tag,
   Modal,
@@ -18,13 +17,11 @@ import {
   Switch,
   InputNumber,
   Row,
-  Col, 
+  Col,
   Divider
 } from 'antd';
-import { 
-  SearchOutlined, 
-  CheckCircleOutlined, 
-  ClockCircleOutlined,
+import {
+  SearchOutlined,
   CheckOutlined,
   CloseOutlined,
   UserOutlined,
@@ -40,7 +37,6 @@ import CostPerDayInput from '../components/CostPerDayInput';
 import dayjs from 'dayjs';
 
 const { Title, Paragraph, Text } = Typography;
-const { Search } = Input;
 const { Option } = Select;
 
 const RefillUpdatePage = () => {
@@ -85,17 +81,17 @@ const RefillUpdatePage = () => {
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
         return;
       }
-      
+
       // Don't capture special keys
       if (event.ctrlKey || event.metaKey || event.altKey) {
         return;
       }
-      
+
       // Don't capture function keys, arrows, etc.
       if (event.key.length > 1 && !['Backspace', 'Delete', 'Enter', 'Escape'].includes(event.key)) {
         return;
       }
-      
+
       // Handle Escape key to clear input
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -104,11 +100,11 @@ const RefillUpdatePage = () => {
         setEnrollments([]);
         return;
       }
-      
+
       // If it's a printable character or backspace/delete
       if (event.key.length === 1 || ['Backspace', 'Delete'].includes(event.key)) {
         event.preventDefault();
-        
+
         if (event.key === 'Backspace' || event.key === 'Delete') {
           // Handle backspace/delete
           setSearchValue(prev => prev.slice(0, -1));
@@ -120,7 +116,7 @@ const RefillUpdatePage = () => {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    
+
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
@@ -139,7 +135,7 @@ const RefillUpdatePage = () => {
     setLoading(true);
     setHasSearched(true);
     try {
-      const response = await enrollmentsAPI.getAll({ 
+      const response = await enrollmentsAPI.getAll({
         search: value.trim(),
         active_only: 'true'
       });
@@ -154,7 +150,7 @@ const RefillUpdatePage = () => {
     }
   }, [setSearchParams]);
 
-// This hook triggers the search automatically
+  // This hook triggers the search automatically
   useEffect(() => {
     // If searchValue is empty, do nothing
     if (!searchValue.trim()) {
@@ -179,23 +175,23 @@ const RefillUpdatePage = () => {
     };
   }, [searchValue, handleSearch]); // Re-run this effect when searchValue or handleSearch changes
 
-const getDepartmentColor = (deptName) => {
-  if (!deptName) return '#D3D3D3'; // Default color (light gray)
+  const getDepartmentColor = (deptName) => {
+    if (!deptName) return '#D3D3D3'; // Default color (light gray)
 
-  // Check based on the start of the string
-  if (deptName.startsWith('01')) return '#87CEEB'; // Medical (Sky Blue)
-  if (deptName.startsWith('02')) return '#2ecc71'; // Surgical (Emerald Green)
-  if (deptName.startsWith('03')) return '#DAA520'; // Ophthalmology (Goldenrod)
-  if (deptName.startsWith('04')) return '#E6E6FA'; // Orthopaedic (Lavender)
-  if (deptName.startsWith('05')) return '#FF69B4'; // O&G (Hot Pink)
-  if (deptName.startsWith('06')) return '#2F54EB'; // Psychiatric (Geek Blue)
-  if (deptName.startsWith('07')) return '#40E0D0'; // ENT (Turquoise)
-  if (deptName.startsWith('08')) return '#A3C7E8'; // Paediatric (Baby Blue)
-  if (deptName.startsWith('09')) return '#32CD32'; // Nephrology (Lime Green)
-  if (deptName.startsWith('10')) return '#FF7F50'; // Rehab Clinic (Coral Orange)
-  
-  return '#D3D3D3'; // Default fallback color
-};
+    // Check based on the start of the string
+    if (deptName.startsWith('01')) return '#87CEEB'; // Medical (Sky Blue)
+    if (deptName.startsWith('02')) return '#2ecc71'; // Surgical (Emerald Green)
+    if (deptName.startsWith('03')) return '#DAA520'; // Ophthalmology (Goldenrod)
+    if (deptName.startsWith('04')) return '#E6E6FA'; // Orthopaedic (Lavender)
+    if (deptName.startsWith('05')) return '#FF69B4'; // O&G (Hot Pink)
+    if (deptName.startsWith('06')) return '#2F54EB'; // Psychiatric (Geek Blue)
+    if (deptName.startsWith('07')) return '#40E0D0'; // ENT (Turquoise)
+    if (deptName.startsWith('08')) return '#A3C7E8'; // Paediatric (Baby Blue)
+    if (deptName.startsWith('09')) return '#32CD32'; // Nephrology (Lime Green)
+    if (deptName.startsWith('10')) return '#FF7F50'; // Rehab Clinic (Coral Orange)
+
+    return '#D3D3D3'; // Default fallback color
+  };
 
 
   const handleRefillUpdate = (enrollment) => {
@@ -206,98 +202,22 @@ const getDepartmentColor = (deptName) => {
     setUpdateModalVisible(true);
   };
 
-  const testDatabase = async () => {
-    try {
-      const response = await fetch('/api/enrollments/test');
-      const data = await response.json();
-      console.log('Database test results:', data);
-      message.info(`Database: ${data.enrollments} enrollments, ${data.patients} patients, ${data.drugs} drugs`);
-      
-      if (data.sampleEnrollments) {
-        console.log('Sample enrollments:', data.sampleEnrollments);
-      }
-    } catch (error) {
-      console.error('Database test error:', error);
-      message.error('Database test failed');
-    }
-  };
 
-  const fetchEnrollments = async () => {
-    try {
-      const response = await enrollmentsAPI.getAll({ active_only: 'true' });
-      setEnrollments(response.data);
-    } catch (error) {
-      console.error('Error fetching enrollments:', error);
-    }
-  };
 
-  const createSampleEnrollments = async () => {
-    try {
-      // Get patients and drugs
-      const patientsResponse = await fetch('/api/patients');
-      const drugsResponse = await fetch('/api/drugs');
-      const patients = await patientsResponse.json();
-      const drugs = await drugsResponse.json();
-      
-      console.log('Available patients:', patients);
-      console.log('Available drugs:', drugs);
-      
-      if (patients.length === 0 || drugs.length === 0) {
-        message.warning('No patients or drugs available. Please add some first.');
-        return;
-      }
-      
-      // Create enrollments for first 2 patients with first 2 drugs
-      const enrollments = [];
-      for (let i = 0; i < Math.min(2, patients.length); i++) {
-        for (let j = 0; j < Math.min(2, drugs.length); j++) {
-          const enrollment = {
-            drug_id: drugs[j].id,
-            patient_id: patients[i].id,
-            dose_per_day: 1.0,
-            prescription_start_date: '2024-01-01',
-            prescription_end_date: '2024-12-31',
-            spub: false,
-            remarks: 'Sample enrollment for testing'
-          };
-          enrollments.push(enrollment);
-        }
-      }
-      
-      // Create enrollments one by one
-      for (const enrollment of enrollments) {
-        try {
-          await fetch('/api/enrollments', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(enrollment)
-          });
-        } catch (error) {
-          console.log('Enrollment might already exist:', error);
-        }
-      }
-      
-      message.success(`Created ${enrollments.length} sample enrollments`);
-      
-      // Refresh the enrollments list
-      await fetchEnrollments();
-      
-    } catch (error) {
-      console.error('Error creating sample enrollments:', error);
-      message.error('Failed to create sample enrollments');
-    }
-  };
+
+
+
 
   const handleUpdateRefill = async (values) => {
     try {
       await enrollmentsAPI.updateRefill(selectedEnrollment.id, {
         latest_refill_date: values.latest_refill_date.format('YYYY-MM-DD')
       });
-      
+
       message.success('Refill date updated successfully!');
       setUpdateModalVisible(false);
       form.resetFields();
-      
+
       // Refresh the search results
       if (searchValue) {
         handleSearch(searchValue);
@@ -311,7 +231,7 @@ const getDepartmentColor = (deptName) => {
   const handleEditEnrollment = () => {
     setEditModalVisible(true);
     setUpdateModalVisible(false);
-    
+
     // Calculate duration if both start and end dates exist
     let duration = null;
     if (selectedEnrollment.prescription_start_date && selectedEnrollment.prescription_end_date) {
@@ -319,7 +239,7 @@ const getDepartmentColor = (deptName) => {
       const endDate = dayjs(selectedEnrollment.prescription_end_date);
       duration = endDate.diff(startDate, 'day');
     }
-    
+
     // Pre-populate the edit form with current enrollment data
     editForm.setFieldsValue({
       ...selectedEnrollment,
@@ -340,11 +260,11 @@ const getDepartmentColor = (deptName) => {
       };
 
       await enrollmentsAPI.update(selectedEnrollment.id, enrollmentData);
-      
+
       message.success('Enrollment updated successfully!');
       setEditModalVisible(false);
       editForm.resetFields();
-      
+
       // Refresh the search results
       if (searchValue) {
         handleSearch(searchValue);
@@ -358,10 +278,10 @@ const getDepartmentColor = (deptName) => {
   const handleDeleteEnrollment = async () => {
     try {
       await enrollmentsAPI.delete(selectedEnrollment.id);
-      
+
       message.success('Enrollment deleted successfully!');
       setUpdateModalVisible(false);
-      
+
       // Refresh the search results
       if (searchValue) {
         handleSearch(searchValue);
@@ -402,14 +322,14 @@ const getDepartmentColor = (deptName) => {
     try {
       const response = await patientsAPI.create(values);
       message.success('Patient created successfully');
-      
+
       // Refresh patients list
       const patientsResponse = await patientsAPI.getAll();
       setPatients(patientsResponse.data);
-      
+
       // Set the newly created patient as selected
       editForm.setFieldsValue({ patient_id: response.data.id });
-      
+
       // Close the create patient modal
       setShowCreatePatient(false);
       patientForm.resetFields();
@@ -422,9 +342,9 @@ const getDepartmentColor = (deptName) => {
 
   const getRefillStatus = (latestRefillDate) => {
     if (!latestRefillDate) return { status: 'never', color: 'red' };
-    
+
     const daysSinceRefill = dayjs().diff(dayjs(latestRefillDate), 'days');
-    
+
     if (daysSinceRefill <= 30) return { status: 'recent', color: 'green' };
     if (daysSinceRefill <= 90) return { status: 'moderate', color: 'orange' };
     if (daysSinceRefill <= 180) return { status: 'overdue', color: 'red' };
@@ -495,10 +415,10 @@ const getDepartmentColor = (deptName) => {
       key: 'latest_refill',
       render: (date) => {
         if (!date) return <Tag color="red">Never</Tag>;
-        
+
         const refillStatus = getRefillStatus(date);
         const daysSince = dayjs().diff(dayjs(date), 'days');
-        
+
         return (
           <Space direction="vertical" size="small">
             <div>{dayjs(date).format('DD/MM/YYYY')}</div>
@@ -513,22 +433,22 @@ const getDepartmentColor = (deptName) => {
       title: 'Status',
       key: 'status',
       render: (_, record) => {
-        const refillStatus = getRefillStatus(record.latest_refill_date);
-        const daysSince = record.latest_refill_date ? 
+
+        const daysSince = record.latest_refill_date ?
           dayjs().diff(dayjs(record.latest_refill_date), 'days') : null;
-        
+
         if (record.spub) {
           return <Tag color="blue">SPUB</Tag>;
         }
-        
+
         if (!record.latest_refill_date) {
           return <Tag color="red">No Refill</Tag>;
         }
-        
+
         if (daysSince > 180) {
           return <Tag color="red">Potential Defaulter</Tag>;
         }
-        
+
         return <Tag color="green">Active</Tag>;
       },
     },
@@ -548,7 +468,7 @@ const getDepartmentColor = (deptName) => {
             💡: You can start typing anywhere on this page to automatically search, <kbd>Esc</kbd> to clear
           </Text>
         </Paragraph>
-        
+
         <div style={{ marginBottom: '24px' }}>
           <Input
             placeholder="Enter patient name or IC number... (or type anywhere on this page)"
@@ -574,17 +494,17 @@ const getDepartmentColor = (deptName) => {
         {enrollments.length > 0 && (
           <div>
             <Table
-            columns={columns}
-            dataSource={enrollments}
-            rowKey="id"
-            pagination={{ pageSize: 10 }}
-            scroll={{ x: 800 }}
-            loading={loading}
-            onRow={(record) => ({
-              onClick: () => handleRefillUpdate(record),
-              style: { cursor: 'pointer' }
-            })}
-          />
+              columns={columns}
+              dataSource={enrollments}
+              rowKey="id"
+              pagination={{ pageSize: 10 }}
+              scroll={{ x: 800 }}
+              loading={loading}
+              onRow={(record) => ({
+                onClick: () => handleRefillUpdate(record),
+                style: { cursor: 'pointer' }
+              })}
+            />
           </div>
         )}
       </Card>
@@ -599,9 +519,9 @@ const getDepartmentColor = (deptName) => {
               trigger={['click']}
               placement="bottomRight"
             >
-              <Button 
-                type="text" 
-                icon={<MoreOutlined />} 
+              <Button
+                type="text"
+                icon={<MoreOutlined />}
                 style={{ border: 'none', boxShadow: 'none' }}
               />
             </Dropdown>
@@ -617,68 +537,68 @@ const getDepartmentColor = (deptName) => {
         footer={null}
         closable={false}
       >
-{selectedEnrollment && (
-        <div style={{
-          marginBottom: '24px',
-          padding: '16px',
-          background: 'var(--bg-secondary)',
-          borderRadius: 'var(--radius-lg)',
-          
-          border: `1px solid ${getDepartmentColor(selectedEnrollment?.department_name)}`, 
-          paddingLeft: '16px'
-        }}>
+        {selectedEnrollment && (
+          <div style={{
+            marginBottom: '24px',
+            padding: '16px',
+            background: 'var(--bg-secondary)',
+            borderRadius: 'var(--radius-lg)',
 
-          <Title level={4} style={{ margin: 0, color: 'var(--text-on-light-bg)' }}>
-            {selectedEnrollment.patient_name}
-          </Title>
-          <Text type="secondary" style={{ fontSize: '12px' }}>
-            {selectedEnrollment.ic_number}
-          </Text>
+            border: `1px solid ${getDepartmentColor(selectedEnrollment?.department_name)}`,
+            paddingLeft: '16px'
+          }}>
 
-          <Divider style={{ margin: '12px 0' }} />
+            <Title level={4} style={{ margin: 0, color: 'var(--text-on-light-bg)' }}>
+              {selectedEnrollment.patient_name}
+            </Title>
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              {selectedEnrollment.ic_number}
+            </Text>
 
-          <Space direction="vertical" size="small" style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Space>
-                <MedicineBoxOutlined style={{ color: getDepartmentColor(selectedEnrollment?.department_name) }}/>
-                <Text strong style={{ color: 'var(--text-on-light-bg)' }}>
-                  {selectedEnrollment.drug_name}
-                </Text>
-              </Space>
-              <Tag color={getDepartmentColor(selectedEnrollment.department_name)}>
-                {selectedEnrollment.department_name}
-              </Tag>
-            </div>
+            <Divider style={{ margin: '12px 0' }} />
 
-            {/* 3. Other Details (condensed) */}
-            <div style={{
+            <Space direction="vertical" size="small" style={{ width: '100%' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Space>
+                  <MedicineBoxOutlined style={{ color: getDepartmentColor(selectedEnrollment?.department_name) }} />
+                  <Text strong style={{ color: 'var(--text-on-light-bg)' }}>
+                    {selectedEnrollment.drug_name}
+                  </Text>
+                </Space>
+                <Tag color={getDepartmentColor(selectedEnrollment.department_name)}>
+                  {selectedEnrollment.department_name}
+                </Tag>
+              </div>
+
+              {/* 3. Other Details (condensed) */}
+              <div style={{
                 fontSize: '12px',
                 color: 'var(--text-secondary)',
                 paddingTop: '8px',
                 lineHeight: '1.6'
-            }}>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <strong>Dose:</strong> {selectedEnrollment.dose_per_day || '-'}
-                </Col>
-                <Col span={12}>
-                  <strong>Start Date:</strong> {dayjs(selectedEnrollment.prescription_start_date).format('DD/MM/YYYY')}
-                </Col>
-                <Col span={12}>
-                  <strong style={{ color: '#A81F00' }}>Last Refill:</strong> {selectedEnrollment.latest_refill_date ? dayjs(selectedEnrollment.latest_refill_date).format('DD/MM/YYYY') : 'Never'}
-                </Col>
-                <Col span={12}>
-                  <strong>End Date:</strong> {selectedEnrollment.prescription_end_date ? dayjs(selectedEnrollment.prescription_end_date).format('DD/MM/YYYY') : '-'}
-                </Col>
-                <Col span={24} style={{ marginTop: '4px' }}>
-                  <strong>Remarks:</strong> {selectedEnrollment.remarks || '-'}
-                </Col>
-              </Row>
-            </div>
-          </Space>
-        </div>
-      )}
-        
+              }}>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <strong>Dose:</strong> {selectedEnrollment.dose_per_day || '-'}
+                  </Col>
+                  <Col span={12}>
+                    <strong>Start Date:</strong> {dayjs(selectedEnrollment.prescription_start_date).format('DD/MM/YYYY')}
+                  </Col>
+                  <Col span={12}>
+                    <strong style={{ color: '#A81F00' }}>Last Refill:</strong> {selectedEnrollment.latest_refill_date ? dayjs(selectedEnrollment.latest_refill_date).format('DD/MM/YYYY') : 'Never'}
+                  </Col>
+                  <Col span={12}>
+                    <strong>End Date:</strong> {selectedEnrollment.prescription_end_date ? dayjs(selectedEnrollment.prescription_end_date).format('DD/MM/YYYY') : '-'}
+                  </Col>
+                  <Col span={24} style={{ marginTop: '4px' }}>
+                    <strong>Remarks:</strong> {selectedEnrollment.remarks || '-'}
+                  </Col>
+                </Row>
+              </div>
+            </Space>
+          </div>
+        )}
+
         <Form
           form={form}
           layout="vertical"
@@ -689,12 +609,12 @@ const getDepartmentColor = (deptName) => {
             label="Latest Refill Date"
             rules={[{ required: true, message: 'Please select refill date' }]}
           >
-            <CustomDateInput 
-              style={{ width: '100%' }} 
+            <CustomDateInput
+              style={{ width: '100%' }}
               placeholder="Select date or enter ddmmyy"
             />
           </Form.Item>
-          
+
           <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
             <Space>
               <Button onClick={() => setUpdateModalVisible(false)}>
@@ -762,8 +682,8 @@ const getDepartmentColor = (deptName) => {
                     patientSearchText ? (
                       <div style={{ textAlign: 'center', padding: '8px' }}>
                         <div style={{ marginBottom: '8px', fontSize: '12px' }}>No patient found</div>
-                        <Button 
-                          type="primary" 
+                        <Button
+                          type="primary"
                           size="small"
                           onClick={() => setShowCreatePatient(true)}
                         >
@@ -847,11 +767,11 @@ const getDepartmentColor = (deptName) => {
                 rules={[{ required: true, message: 'Required' }]}
                 style={{ marginBottom: '12px' }}
               >
-              <CustomDateInput
-                style={{ width: '100%' }}
-                onChange={handleStartDateChange}
-                placeholder="Enter ddmmyy or select date"
-              />
+                <CustomDateInput
+                  style={{ width: '100%' }}
+                  onChange={handleStartDateChange}
+                  placeholder="Enter ddmmyy or select date"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -893,7 +813,7 @@ const getDepartmentColor = (deptName) => {
                   tooltip="Refills at other facilities"
                   style={{ marginBottom: 0 }}
                 >
-                    <Switch size="default" checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} /> </Form.Item>
+                  <Switch size="default" checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} /> </Form.Item>
                 <Form.Item
                   name="is_active"
                   label="Active"
@@ -901,8 +821,8 @@ const getDepartmentColor = (deptName) => {
                   tooltip="Counts toward quota"
                   style={{ marginBottom: 0 }}
                 >
-                    <Switch size="default" defaultChecked  checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} /> </Form.Item>
-            </div>
+                  <Switch size="default" defaultChecked checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} /> </Form.Item>
+              </div>
             </Col>
           </Row>
 
@@ -950,17 +870,17 @@ const getDepartmentColor = (deptName) => {
           </Row>
 
           {/* Row 5: Action Buttons */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
             paddingTop: '8px',
             borderTop: '1px solid #f0f0f0'
           }}>
             <div style={{ fontSize: '12px', color: '#666' }}>
-              Press <kbd style={{ 
-                background: '#f5f5f5', 
-                padding: '2px 4px', 
+              Press <kbd style={{
+                background: '#f5f5f5',
+                padding: '2px 4px',
                 borderRadius: '3px',
                 fontSize: '11px'
               }}>Ctrl+Enter</kbd> to save
@@ -1014,8 +934,8 @@ const getDepartmentColor = (deptName) => {
             normalize={(value) => value ? value.toUpperCase() : value}
             style={{ marginBottom: '16px' }}
           >
-            <Input 
-              placeholder="Enter patient name" 
+            <Input
+              placeholder="Enter patient name"
               autoFocus
               onPressEnter={() => {
                 const icInput = document.querySelector('input[placeholder="Enter IC number, passport, or other identifier"]');
@@ -1030,23 +950,23 @@ const getDepartmentColor = (deptName) => {
             rules={[{ required: true, message: 'Please enter patient identifier' }]}
             style={{ marginBottom: '20px' }}
           >
-            <Input 
+            <Input
               placeholder="Enter IC number, passport, or other identifier"
               onPressEnter={() => patientForm.submit()}
             />
           </Form.Item>
 
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
             paddingTop: '8px',
             borderTop: '1px solid #f0f0f0'
           }}>
             <div style={{ fontSize: '12px', color: '#666' }}>
-              Press <kbd style={{ 
-                background: '#f5f5f5', 
-                padding: '2px 4px', 
+              Press <kbd style={{
+                background: '#f5f5f5',
+                padding: '2px 4px',
                 borderRadius: '3px',
                 fontSize: '11px'
               }}>Enter</kbd> to create

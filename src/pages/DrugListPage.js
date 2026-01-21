@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Card,
   Table,
-  List,
-  Avatar,
   Button,
   Dropdown,
   Typography,
@@ -16,13 +14,11 @@ import {
   message,
   Popconfirm,
   Tag,
-  Tooltip,
   Progress,
   Row,
   Col,
   Statistic,
   Divider,
-  DatePicker,
   Switch,
   Segmented,
   Empty,
@@ -36,15 +32,13 @@ import {
   CloseOutlined,
   DeleteOutlined,
   MedicineBoxOutlined,
-  DollarOutlined,
   UserOutlined,
   UserAddOutlined,
   ReloadOutlined,
   MoreOutlined,
   SearchOutlined,
   TableOutlined,
-  AppstoreOutlined,
-  DownloadOutlined
+  AppstoreOutlined
 } from '@ant-design/icons';
 import { drugsAPI, departmentsAPI, patientsAPI, enrollmentsAPI } from '../services/api';
 import CustomDateInput from '../components/CustomDateInput';
@@ -60,7 +54,6 @@ import { FaFileExcel } from 'react-icons/fa';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
-const { Search } = Input;
 
 const DrugListPage = () => {
   const { settings, loading: settingsLoading } = useSettings();

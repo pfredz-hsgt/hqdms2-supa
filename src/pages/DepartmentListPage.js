@@ -13,12 +13,10 @@ import {
   Tag,
   Tooltip,
   Row,
-  Col,
-  Statistic
+  Col
 } from 'antd';
 import {
   PlusOutlined,
-  EditOutlined,
   DeleteOutlined,
   BankOutlined,
   MedicineBoxOutlined,
@@ -132,11 +130,7 @@ const DepartmentListPage = () => {
     },
   ];
 
-  const totalStats = departments.reduce((acc, dept) => {
-    acc.totalDrugs += dept.drug_count || 0;
-    acc.totalEnrollments += dept.total_enrollments || 0;
-    return acc;
-  }, { totalDrugs: 0, totalEnrollments: 0 });
+
 
   return (
     <div>

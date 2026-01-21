@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Tabs, message, Typography, Divider, Modal, Checkbox } from 'antd';
+import { Form, Input, Button, Card, Tabs, message, Typography, Modal, Checkbox } from 'antd';
 import { LockOutlined, IdcardOutlined, ExclamationCircleOutlined } from '@ant-design/icons'; // Changed UserOutlined to IdcardOutlined
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';

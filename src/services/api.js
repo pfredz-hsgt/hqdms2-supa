@@ -300,7 +300,7 @@ export const enrollmentsAPI = {
     if (insertError) handleError(insertError);
 
     // 3. Deactivate enrollment
-    const { data: updatedEnrollment, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from('enrollments')
       .update({ is_active: false })
       .eq('id', id)
@@ -776,7 +776,7 @@ export const authAPI = {
   }
 };
 
-export default {
+const api = {
   drugsAPI,
   patientsAPI,
   enrollmentsAPI,
@@ -785,3 +785,5 @@ export default {
   settingsAPI,
   authAPI
 };
+
+export default api;

@@ -3,14 +3,12 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Layout, Menu, Typography } from 'antd';
 import {
   HomeOutlined,
-  DashboardOutlined,
   UserOutlined,
   MedicineBoxOutlined,
   FileTextOutlined,
   SearchOutlined,
   BankOutlined,
-  TeamOutlined,
-  SettingOutlined
+  TeamOutlined
 } from '@ant-design/icons';
 import { App as CapacitorApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -33,9 +31,8 @@ import PrescriberOverviewPage from './pages/PrescriberOverviewPage';
 import LoginPage from './pages/LoginPage';
 import AdminRegistrationPage from './pages/AdminRegistrationPage';
 import logo from './img/logo.svg';
-import logo3 from './img/logo3.svg';
 
-const { Sider, Content, Footer, Header } = Layout;
+const { Sider, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 
 // Main App Layout Component

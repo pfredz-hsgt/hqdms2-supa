@@ -6,20 +6,16 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Switch,
   InputNumber,
   message,
-  Popconfirm,
   Space,
   Card,
   Typography,
-  Divider,
   Tag,
   Tooltip,
   Row,
   Col,
-  Alert,
   Dropdown
 } from 'antd';
 import {
@@ -39,14 +35,12 @@ import { enrollmentsAPI, patientsAPI, drugsAPI, departmentsAPI } from '../servic
 import CustomDateInput from '../components/CustomDateInput';
 import CostPerDayInput from '../components/CostPerDayInput';
 import './MediaWidth.css';
-import { useSettings } from '../contexts/SettingsContext';
+
 
 const { Title, Text } = Typography;
 const { Option } = Select;
-const { Search } = Input;
 
 const EnrollmentListPage = () => {
-  const { settings, loading: settingsLoading } = useSettings();
   const [enrollments, setEnrollments] = useState([]);
   const [patients, setPatients] = useState([]);
   const [drugs, setDrugs] = useState([]);
@@ -61,7 +55,7 @@ const EnrollmentListPage = () => {
   const [selectedDrug, setSelectedDrug] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('active');
   const [actionModalVisible, setActionModalVisible] = useState(false);
-  const [selectedEnrollment, setSelectedEnrollment] = useState(null);
+  const [selectedEnrollment] = useState(null);
   const [patientSearchText, setPatientSearchText] = useState('');
   const [showCreatePatient, setShowCreatePatient] = useState(false);
   const [patientForm] = Form.useForm();

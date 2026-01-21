@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  Typography, 
-  Row, 
-  Col, 
-  Statistic, 
-  Progress, 
-  Tag, 
+import {
+  Card,
+  Typography,
+  Row,
+  Col,
+  Statistic,
+  Progress,
+  Tag,
   Space,
   Select,
   Alert,
   Spin,
-  Divider,
   Button,
   List,
   Avatar,
@@ -20,30 +19,24 @@ import {
   Table,
   Form,
   Input,
-  DatePicker,
   Switch,
   InputNumber,
   message,
   Popconfirm
 } from 'antd';
-import { 
-  MedicineBoxOutlined, 
-  UserOutlined, 
-  DollarOutlined,
+import {
+  MedicineBoxOutlined,
+  UserOutlined,
   WarningOutlined,
   CheckCircleOutlined,
   ReloadOutlined,
   ExclamationCircleOutlined,
-  RiseOutlined,
   ClockCircleOutlined,
   SearchOutlined,
-  TeamOutlined,
-  FileTextOutlined,
-  BankOutlined,
   EditOutlined,
   DeleteOutlined
 } from '@ant-design/icons';
-import { departmentsAPI, drugsAPI, enrollmentsAPI, patientsAPI } from '../services/api';
+import { departmentsAPI, drugsAPI, enrollmentsAPI } from '../services/api';
 import CustomDateInput from '../components/CustomDateInput';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -56,7 +49,6 @@ const SummaryPage = () => {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [drugs, setDrugs] = useState([]);
-  const [enrollments, setEnrollments] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [drugSearchText, setDrugSearchText] = useState('');
   const [loading, setLoading] = useState(true);
@@ -105,11 +97,11 @@ const SummaryPage = () => {
         drugsAPI.getAll(),
         enrollmentsAPI.getAll({ active_only: 'true' })
       ]);
-      
+
       setDepartments(deptResponse.data);
       setDrugs(drugsResponse.data);
-      setEnrollments(enrollmentsResponse.data);
-      
+      // setEnrollments(enrollmentsResponse.data);
+
       // Calculate statistics
       const totalDrugs = drugsResponse.data.length;
       const totalPatients = enrollmentsResponse.data.length;
@@ -118,7 +110,7 @@ const SummaryPage = () => {
       const monthlyExpenditure = enrollmentsResponse.data.reduce((sum, enrollment) => {
         return sum + (enrollment.cost_per_year || 0) / 12;
       }, 0);
-      
+
       // Count defaulters (patients with refill date > 6 months ago)
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -126,7 +118,7 @@ const SummaryPage = () => {
         if (!enrollment.latest_refill_date || enrollment.spub) return false;
         return new Date(enrollment.latest_refill_date) < sixMonthsAgo;
       }).length;
-      
+
       // Count recent refills (last 24 hours)
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -134,7 +126,7 @@ const SummaryPage = () => {
         if (!enrollment.latest_refill_date) return false;
         return new Date(enrollment.latest_refill_date) > yesterday;
       }).length;
-      
+
       setStats({
         totalDrugs,
         totalPatients,
@@ -145,7 +137,7 @@ const SummaryPage = () => {
         totalQuota,
         quotaUtilization
       });
-      
+
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -174,7 +166,7 @@ const SummaryPage = () => {
 
   const getUtilizationStatus = (activePatients, quota) => {
     const percentage = quota > 0 ? (activePatients / quota) * 100 : 0;
-    
+
     if (percentage >= 100) return { status: 'FULL', color: '#ff4d4f', percentage: Math.round(percentage) };
     if (percentage >= 80) return { status: 'HIGH', color: '#faad14', percentage: Math.round(percentage) };
     if (percentage >= 50) return { status: 'MEDIUM', color: '#1890ff', percentage: Math.round(percentage) };
@@ -183,7 +175,7 @@ const SummaryPage = () => {
 
   const getQuotaColor = (activePatients, quota) => {
     const percentage = quota > 0 ? (activePatients / quota) * 100 : 0;
-    
+
     if (percentage >= 100) return '#ff4d4f';
     if (percentage >= 80) return '#faad14';
     if (percentage >= 50) return '#1890ff';
@@ -193,17 +185,17 @@ const SummaryPage = () => {
   const handleDrugClick = async (drug) => {
     setSelectedDrug(drug);
     setDrugDetailsModalVisible(true);
-    
+
     try {
       // Fetch both active and inactive enrollments for this specific drug
       const [activeResponse, inactiveResponse] = await Promise.all([
-        enrollmentsAPI.getAll({ 
-          drug_id: drug.id, 
-          active_only: 'true' 
+        enrollmentsAPI.getAll({
+          drug_id: drug.id,
+          active_only: 'true'
         }),
-        enrollmentsAPI.getAll({ 
-          drug_id: drug.id, 
-          active_only: 'false' 
+        enrollmentsAPI.getAll({
+          drug_id: drug.id,
+          active_only: 'false'
         })
       ]);
       setDrugEnrollments(activeResponse.data);
@@ -229,21 +221,21 @@ const SummaryPage = () => {
     try {
       await enrollmentsAPI.delete(enrollmentId);
       message.success('Enrollment deleted successfully');
-      
+
       // Refresh both active and inactive enrollments
       const [activeResponse, inactiveResponse] = await Promise.all([
-        enrollmentsAPI.getAll({ 
-          drug_id: selectedDrug.id, 
-          active_only: 'true' 
+        enrollmentsAPI.getAll({
+          drug_id: selectedDrug.id,
+          active_only: 'true'
         }),
-        enrollmentsAPI.getAll({ 
-          drug_id: selectedDrug.id, 
-          active_only: 'false' 
+        enrollmentsAPI.getAll({
+          drug_id: selectedDrug.id,
+          active_only: 'false'
         })
       ]);
       setDrugEnrollments(activeResponse.data);
       setInactiveEnrollments(inactiveResponse.data);
-      
+
       // Refresh main data
       await fetchData();
     } catch (error) {
@@ -263,23 +255,23 @@ const SummaryPage = () => {
 
       await enrollmentsAPI.update(editingEnrollment.id, enrollmentData);
       message.success('Enrollment updated successfully');
-      
+
       setEditModalVisible(false);
-      
+
       // Refresh both active and inactive enrollments
       const [activeResponse, inactiveResponse] = await Promise.all([
-        enrollmentsAPI.getAll({ 
-          drug_id: selectedDrug.id, 
-          active_only: 'true' 
+        enrollmentsAPI.getAll({
+          drug_id: selectedDrug.id,
+          active_only: 'true'
         }),
-        enrollmentsAPI.getAll({ 
-          drug_id: selectedDrug.id, 
-          active_only: 'false' 
+        enrollmentsAPI.getAll({
+          drug_id: selectedDrug.id,
+          active_only: 'false'
         })
       ]);
       setDrugEnrollments(activeResponse.data);
       setInactiveEnrollments(inactiveResponse.data);
-      
+
       // Refresh main data
       await fetchData();
     } catch (error) {
@@ -288,23 +280,14 @@ const SummaryPage = () => {
     }
   };
 
-  const calculateTotals = () => {
-    return drugs.reduce((totals, drug) => {
-      totals.totalQuota += drug.quota_number || 0;
-      totals.totalActive += drug.current_active_patients || 0;
-      totals.totalCost += (drug.current_active_patients || 0) * (drug.price || 0);
-      return totals;
-    }, { totalQuota: 0, totalActive: 0, totalCost: 0 });
-  };
 
-  const totals = calculateTotals();
 
   // Filter drugs based on search text
   const filteredDrugs = drugs.filter(drug => {
     if (!drugSearchText) return true;
     const searchLower = drugSearchText.toLowerCase();
-    return drug.name.toLowerCase().includes(searchLower) || 
-           drug.department_name?.toLowerCase().includes(searchLower);
+    return drug.name.toLowerCase().includes(searchLower) ||
+      drug.department_name?.toLowerCase().includes(searchLower);
   });
 
   // Generate recent activity data
@@ -343,12 +326,7 @@ const SummaryPage = () => {
     }
   ];
 
-  const upcomingTasks = [
-    'Review quarterly cost analysis report',
-    'Update defaulter patient list',
-    'Prepare monthly inventory summary',
-    'Check quota utilization reports'
-  ];
+
 
   if (loading) {
     return (
@@ -360,7 +338,7 @@ const SummaryPage = () => {
   }
 
   return (
-    <div style={{ 
+    <div style={{
       padding: '16px',
       '@media (min-width: 768px)': {
         padding: '24px'
@@ -412,7 +390,7 @@ const SummaryPage = () => {
                   loading={loading}
                   style={{ width: '100%' }}
                 >
-                  
+
                 </Button>
               </Col>
             </Row>
@@ -430,77 +408,77 @@ const SummaryPage = () => {
               {filteredDrugs.map(drug => {
                 const utilization = getUtilizationStatus(drug.current_active_patients, drug.quota_number);
                 const availableSlots = drug.quota_number - drug.current_active_patients;
-                
-                return (
-                <Col xs={24} sm={24} md={12} lg={12} xl={12} key={drug.id}> {/* Adjusted grid for wider cards */}
-                  <Card
-                    hoverable
-                    style={{
-                      width: '100%',
-                      borderLeft: `5px solid ${getQuotaColor(drug.current_active_patients, drug.quota_number)}`, // Emphasize status on the left
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => handleDrugClick(drug)}
-                    bodyStyle={{ padding: '10px' }} // Slightly reduce padding
-                  >
-                    <Row align="middle" gutter={16}>
-                      {/* ===== LEFT COLUMN: Drug Info ===== */}
-                      <Col xs={16} sm={16} md={16} style={{ textAlign: 'left' }}>
-                        <MedicineBoxOutlined
-                          style={{
-                            fontSize: '32px',
-                            color: getQuotaColor(drug.current_active_patients, drug.quota_number),
-                            marginBottom: '8px'
-                          }}
-                        />
-                        <Title level={5} style={{ margin: 0, fontSize: '14px' }} ellipsis>
-                          {drug.name}
-                        </Title>
-                        <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>
-                          {drug.department_name}
-                        </Text>
-                      </Col>
 
-                      {/* ===== RIGHT COLUMN: Stats & Progress ===== */}
-                      <Col xs={8} sm={8} md={8}>
-                        {/* Statistics Row */}
-                        <Row gutter={8}>
-                          <Col span={12}>
-                            <Statistic
-                              title="Quota"
-                              value={drug.quota_number}
-                              valueStyle={{ fontSize: '16px' }}
-                            />
-                          </Col>
-                          <Col span={12}>
-                            <Statistic
-                              title="Active"
-                              value={drug.current_active_patients}
-                              valueStyle={{ fontSize: '16px' }}
-                            />
-                          </Col>
-                        </Row>
-                        
-                        {/* Progress Bar */}
-                        <div style={{ marginTop: '8px' }}>
-                          <Progress
-                            percent={utilization.percentage}
-                            strokeColor={utilization.color}
-                            size="small"
-                            format={() => `${drug.current_active_patients}/${drug.quota_number}`}
+                return (
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12} key={drug.id}> {/* Adjusted grid for wider cards */}
+                    <Card
+                      hoverable
+                      style={{
+                        width: '100%',
+                        borderLeft: `5px solid ${getQuotaColor(drug.current_active_patients, drug.quota_number)}`, // Emphasize status on the left
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => handleDrugClick(drug)}
+                      bodyStyle={{ padding: '10px' }} // Slightly reduce padding
+                    >
+                      <Row align="middle" gutter={16}>
+                        {/* ===== LEFT COLUMN: Drug Info ===== */}
+                        <Col xs={16} sm={16} md={16} style={{ textAlign: 'left' }}>
+                          <MedicineBoxOutlined
+                            style={{
+                              fontSize: '32px',
+                              color: getQuotaColor(drug.current_active_patients, drug.quota_number),
+                              marginBottom: '8px'
+                            }}
                           />
-                        </div>
-                        
-                        {/* Available Slots Tag */}
-                        <div style={{ marginTop: '8px', textAlign: 'right' }}>
-                          <Tag color={utilization.color} style={{ fontSize: '11px' }}>
-                            {availableSlots} slots available
-                          </Tag>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Card>
-                </Col>
+                          <Title level={5} style={{ margin: 0, fontSize: '14px' }} ellipsis>
+                            {drug.name}
+                          </Title>
+                          <Text type="secondary" style={{ fontSize: '12px' }} ellipsis>
+                            {drug.department_name}
+                          </Text>
+                        </Col>
+
+                        {/* ===== RIGHT COLUMN: Stats & Progress ===== */}
+                        <Col xs={8} sm={8} md={8}>
+                          {/* Statistics Row */}
+                          <Row gutter={8}>
+                            <Col span={12}>
+                              <Statistic
+                                title="Quota"
+                                value={drug.quota_number}
+                                valueStyle={{ fontSize: '16px' }}
+                              />
+                            </Col>
+                            <Col span={12}>
+                              <Statistic
+                                title="Active"
+                                value={drug.current_active_patients}
+                                valueStyle={{ fontSize: '16px' }}
+                              />
+                            </Col>
+                          </Row>
+
+                          {/* Progress Bar */}
+                          <div style={{ marginTop: '8px' }}>
+                            <Progress
+                              percent={utilization.percentage}
+                              strokeColor={utilization.color}
+                              size="small"
+                              format={() => `${drug.current_active_patients}/${drug.quota_number}`}
+                            />
+                          </div>
+
+                          {/* Available Slots Tag */}
+                          <div style={{ marginTop: '8px', textAlign: 'right' }}>
+                            <Tag color={utilization.color} style={{ fontSize: '11px' }}>
+                              {availableSlots} slots available
+                            </Tag>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </Col>
                 );
               })}
             </Row>
@@ -530,7 +508,7 @@ const SummaryPage = () => {
             </Text>
           </Card>
         </Col>
-        
+
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic

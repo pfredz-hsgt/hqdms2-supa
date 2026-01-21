@@ -1,28 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  Table, 
-  Button, 
-  Typography, 
-  Space, 
-  Input, 
-  Modal, 
-  Form, 
-  message, 
+import {
+  Card,
+  Table,
+  Button,
+  Typography,
+  Space,
+  Input,
+  Modal,
+  Form,
+  message,
   Popconfirm,
-  Tag,
   Tooltip,
   Row,
-  Col,
-  Select,
-  InputNumber
+  Col
 } from 'antd';
-import { 
-  PlusOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
+import {
+  PlusOutlined,
+  DeleteOutlined,
   UserOutlined,
-  MedicineBoxOutlined,
   SearchOutlined
 } from '@ant-design/icons';
 import { patientsAPI } from '../services/api';
@@ -32,7 +27,6 @@ import { useSettings } from '../contexts/SettingsContext';
 
 const { Title } = Typography;
 const { Search } = Input;
-const { Option } = Select;
 
 const PatientListPage = () => {
   const { settings, loading: settingsLoading } = useSettings();
@@ -132,7 +126,7 @@ const PatientListPage = () => {
       title: 'Created',
       dataIndex: 'created_at',
       key: 'created_at',
-      responsive: ['lg'], 
+      responsive: ['lg'],
       render: (date) => dayjs(date).format('DD/MM/YYYY'),
     },
   ];
@@ -151,8 +145,8 @@ const PatientListPage = () => {
               </Title>
             </Col>
             <Col xs={24} sm={12} style={{ textAlign: 'right', marginTop: '8px', '@media (min-width: 768px)': { marginTop: '0' } }}>
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 icon={<PlusOutlined />}
                 onClick={handleAdd}
                 disabled={settingsLoading || !settings?.allowNewPatients}
@@ -232,21 +226,21 @@ const PatientListPage = () => {
 
           <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
             <Space>
-            {editingPatient ? 
-          <Popconfirm
-            title="Are you sure you want to delete this patient?"
-            onConfirm={() => handleDelete(editingPatient.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Tooltip title="Delete">
-              <Button 
-                icon={<DeleteOutlined />} 
-                danger
-              />
-            </Tooltip>
-          </Popconfirm>
-            : ' '}
+              {editingPatient ?
+                <Popconfirm
+                  title="Are you sure you want to delete this patient?"
+                  onConfirm={() => handleDelete(editingPatient.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Tooltip title="Delete">
+                    <Button
+                      icon={<DeleteOutlined />}
+                      danger
+                    />
+                  </Tooltip>
+                </Popconfirm>
+                : ' '}
               <Button onClick={() => setModalVisible(false)}>
                 Cancel
               </Button>

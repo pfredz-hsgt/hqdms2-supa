@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, message } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import { authAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
 const ChangePasswordModal = ({ visible, onCancel, onSuccess }) => {

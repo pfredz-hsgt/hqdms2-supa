@@ -6,14 +6,12 @@ import {
   Col,
   Button,
   Select,
-  DatePicker,
   Table,
   Statistic,
   Space,
   message,
   Tabs,
   Alert,
-  Spin,
   Input,
   Progress
 } from 'antd';
@@ -28,7 +26,6 @@ import {
   SearchOutlined
 } from '@ant-design/icons';
 import { reportsAPI, departmentsAPI, enrollmentsAPI } from '../services/api';
-import CustomDateInput from '../components/CustomDateInput';
 import dayjs from 'dayjs';
 import CountUp from 'react-countup';
 import { FaFileExcel } from 'react-icons/fa';
@@ -38,7 +35,6 @@ import '../components/EnhancedDrugCard.css';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 // Removed TabPane import as we'll use items prop instead
 
 const ReportsPage = () => {
@@ -47,13 +43,14 @@ const ReportsPage = () => {
   const [reportData, setReportData] = useState({});
   const [dashboardData, setDashboardData] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [selectedDateRange, setSelectedDateRange] = useState([dayjs().startOf('year'), dayjs().endOf('year')]);
+  const [selectedDateRange] = useState([dayjs().startOf('year'), dayjs().endOf('year')]);
   const [yearlyCostData, setYearlyCostData] = useState(null);
 
   useEffect(() => {
     fetchDepartments();
     fetchDashboardData();
     fetchYearlyCosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -168,13 +165,13 @@ const ReportsPage = () => {
             message.warning('Please generate the report first');
             return;
           }
-          
+
           // Summary sheet
           const summaryData = [
             ['Report Type', 'Yearly Cost Report'],
             ['Export Date', dayjs().format('DD/MM/YYYY HH:mm:ss')],
-            ['Department Filter', selectedDepartment !== 'all' 
-              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All' 
+            ['Department Filter', selectedDepartment !== 'all'
+              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All'
               : 'All Departments'],
             [''],
             ['Summary Statistics', ''],
@@ -202,13 +199,13 @@ const ReportsPage = () => {
             const enrollmentsData = yearlyCostData.enrollments.map(record => ({
               'Patient Name': record.patient_name || '-',
               'IC Number': record.ic_number || '-',
-              'Department': record.department_name?.includes(' - ') 
-                ? record.department_name.split(' - ')[1] 
+              'Department': record.department_name?.includes(' - ')
+                ? record.department_name.split(' - ')[1]
                 : (record.department_name || '-'),
               'Drug Name': record.drug_name || '-',
               'Cost per Day (RM)': record.cost_per_day ? parseFloat(record.cost_per_day).toFixed(2) : '-',
-              'Yearly Cost (RM)': record.calculated_yearly_cost 
-                ? Number(record.calculated_yearly_cost).toFixed(2) 
+              'Yearly Cost (RM)': record.calculated_yearly_cost
+                ? Number(record.calculated_yearly_cost).toFixed(2)
                 : '0.00',
               'Status': record.is_active ? 'Active' : 'Inactive'
             }));
@@ -220,7 +217,7 @@ const ReportsPage = () => {
             const emptySheet = XLSX.utils.aoa_to_sheet(emptyData);
             XLSX.utils.book_append_sheet(wb, emptySheet, 'Enrollments');
           }
-          
+
           filename = `yearly_costs_${dayjs().format('YYYY-MM-DD')}.xlsx`;
           break;
 
@@ -229,24 +226,24 @@ const ReportsPage = () => {
             message.warning('Please generate the report first');
             return;
           }
-          
+
           const costAnalysisData = reportData.costAnalysis.map(record => ({
-            'Department': record.department_name?.includes(' - ') 
-              ? record.department_name.split(' - ')[1] 
+            'Department': record.department_name?.includes(' - ')
+              ? record.department_name.split(' - ')[1]
               : (record.department_name || '-'),
             'Drug Name': record.drug_name || '-',
             'Patient Count': record.patient_count || 0,
-            'Total Annual Cost (RM)': record.total_annual_cost 
-              ? Number(record.total_annual_cost).toFixed(2) 
+            'Total Annual Cost (RM)': record.total_annual_cost
+              ? Number(record.total_annual_cost).toFixed(2)
               : '0.00',
-            'Avg Cost per Patient (RM)': record.avg_cost_per_patient 
-              ? Number(record.avg_cost_per_patient).toFixed(2) 
+            'Avg Cost per Patient (RM)': record.avg_cost_per_patient
+              ? Number(record.avg_cost_per_patient).toFixed(2)
               : '0.00',
-            'Unit Price (RM)': record.unit_price 
-              ? Number(record.unit_price).toFixed(2) 
+            'Unit Price (RM)': record.unit_price
+              ? Number(record.unit_price).toFixed(2)
               : '0.00'
           }));
-          
+
           // Add metadata sheet
           const costAnalysisMeta = [
             ['Report Type', 'Cost Analysis Report'],
@@ -254,14 +251,14 @@ const ReportsPage = () => {
             ['Date Range', selectedDateRange[0] && selectedDateRange[1]
               ? `${selectedDateRange[0].format('DD/MM/YYYY')} - ${selectedDateRange[1].format('DD/MM/YYYY')}`
               : 'All Time'],
-            ['Department Filter', selectedDepartment !== 'all' 
-              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All' 
+            ['Department Filter', selectedDepartment !== 'all'
+              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All'
               : 'All Departments'],
             ['Total Records', reportData.costAnalysis.length]
           ];
           const costAnalysisMetaSheet = XLSX.utils.aoa_to_sheet(costAnalysisMeta);
           XLSX.utils.book_append_sheet(wb, costAnalysisMetaSheet, 'Report Info');
-          
+
           const costAnalysisSheet = XLSX.utils.json_to_sheet(costAnalysisData);
           XLSX.utils.book_append_sheet(wb, costAnalysisSheet, 'Cost Analysis');
           filename = `cost_analysis_${dayjs().format('YYYY-MM-DD')}.xlsx`;
@@ -272,33 +269,33 @@ const ReportsPage = () => {
             message.warning('Please generate the report first');
             return;
           }
-          
+
           const quotaData = reportData.quotaUtilization.map(record => ({
-            'Department': record.department_name?.includes(' - ') 
-              ? record.department_name.split(' - ')[1] 
+            'Department': record.department_name?.includes(' - ')
+              ? record.department_name.split(' - ')[1]
               : (record.department_name || '-'),
             'Drug Name': record.drug_name || '-',
             'Quota': record.quota_number || 0,
             'Active Patients': record.active_patients || 0,
             'Available Slots': record.available_slots || 0,
-            'Utilization %': record.utilization_percentage 
-              ? `${record.utilization_percentage}%` 
+            'Utilization %': record.utilization_percentage
+              ? `${record.utilization_percentage}%`
               : '0%',
             'Status': record.status || '-'
           }));
-          
+
           // Add metadata sheet
           const quotaMeta = [
             ['Report Type', 'Quota Utilization Report'],
             ['Export Date', dayjs().format('DD/MM/YYYY HH:mm:ss')],
-            ['Department Filter', selectedDepartment !== 'all' 
-              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All' 
+            ['Department Filter', selectedDepartment !== 'all'
+              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All'
               : 'All Departments'],
             ['Total Records', reportData.quotaUtilization.length]
           ];
           const quotaMetaSheet = XLSX.utils.aoa_to_sheet(quotaMeta);
           XLSX.utils.book_append_sheet(wb, quotaMetaSheet, 'Report Info');
-          
+
           const quotaSheet = XLSX.utils.json_to_sheet(quotaData);
           XLSX.utils.book_append_sheet(wb, quotaSheet, 'Quota Utilization');
           filename = `quota_utilization_${dayjs().format('YYYY-MM-DD')}.xlsx`;
@@ -309,34 +306,34 @@ const ReportsPage = () => {
             message.warning('Please generate the report first');
             return;
           }
-          
+
           const defaultersData = reportData.defaulters.map(record => ({
-            'Department': record.department_name?.includes(' - ') 
-              ? record.department_name.split(' - ')[1] 
+            'Department': record.department_name?.includes(' - ')
+              ? record.department_name.split(' - ')[1]
               : (record.department_name || '-'),
             'Drug Name': record.drug_name || '-',
             'Patient Name': record.patient_name || '-',
             'IC Number': record.ic_number || '-',
-            'Last Refill': record.latest_refill_date 
-              ? dayjs(record.latest_refill_date).format('DD/MM/YYYY') 
+            'Last Refill': record.latest_refill_date
+              ? dayjs(record.latest_refill_date).format('DD/MM/YYYY')
               : 'Never',
             'Days Since Refill': record.days_since_refill || 0,
             'SPUB': record.spub ? 'Yes' : 'No'
           }));
-          
+
           // Add metadata sheet
           const defaultersMeta = [
             ['Report Type', 'Defaulter Report'],
             ['Export Date', dayjs().format('DD/MM/YYYY HH:mm:ss')],
-            ['Department Filter', selectedDepartment !== 'all' 
-              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All' 
+            ['Department Filter', selectedDepartment !== 'all'
+              ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All'
               : 'All Departments'],
             ['Total Defaulters', reportData.defaulters.length],
             ['Note', 'Patients with no refill for more than 6 months (excluding SPUB patients)']
           ];
           const defaultersMetaSheet = XLSX.utils.aoa_to_sheet(defaultersMeta);
           XLSX.utils.book_append_sheet(wb, defaultersMetaSheet, 'Report Info');
-          
+
           const defaultersSheet = XLSX.utils.json_to_sheet(defaultersData);
           XLSX.utils.book_append_sheet(wb, defaultersSheet, 'Defaulters');
           filename = `defaulters_${dayjs().format('YYYY-MM-DD')}.xlsx`;
@@ -361,20 +358,20 @@ const ReportsPage = () => {
             const enrollmentsData = allEnrollments.map(record => ({
               'Patient Name': record.patient_name || '-',
               'IC Number': record.ic_number || '-',
-              'Department': record.department_name?.includes(' - ') 
-                ? record.department_name.split(' - ')[1] 
+              'Department': record.department_name?.includes(' - ')
+                ? record.department_name.split(' - ')[1]
                 : (record.department_name || '-'),
               'Drug Name': record.drug_name || '-',
               'Dose per Day': record.dose_per_day || '-',
               'Cost per Day (RM)': record.cost_per_day ? parseFloat(record.cost_per_day).toFixed(2) : '-',
-              'Start Date': record.prescription_start_date 
-                ? dayjs(record.prescription_start_date).format('DD/MM/YYYY') 
+              'Start Date': record.prescription_start_date
+                ? dayjs(record.prescription_start_date).format('DD/MM/YYYY')
                 : '-',
-              'End Date': record.prescription_end_date 
-                ? dayjs(record.prescription_end_date).format('DD/MM/YYYY') 
+              'End Date': record.prescription_end_date
+                ? dayjs(record.prescription_end_date).format('DD/MM/YYYY')
                 : '-',
-              'Last Refill Date': record.latest_refill_date 
-                ? dayjs(record.latest_refill_date).format('DD/MM/YYYY') 
+              'Last Refill Date': record.latest_refill_date
+                ? dayjs(record.latest_refill_date).format('DD/MM/YYYY')
                 : '-',
               'SPUB': record.spub ? 'Yes' : 'No',
               'Status': record.is_active ? 'Active' : 'Inactive',
@@ -385,8 +382,8 @@ const ReportsPage = () => {
             const allEnrollmentsMeta = [
               ['Report Type', 'All Enrollments Report'],
               ['Export Date', dayjs().format('DD/MM/YYYY HH:mm:ss')],
-              ['Department Filter', selectedDepartment !== 'all' 
-                ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All' 
+              ['Department Filter', selectedDepartment !== 'all'
+                ? departments.find(d => d.id.toString() === selectedDepartment)?.name || 'All'
                 : 'All Departments'],
               ['Total Enrollments', allEnrollments.length],
               ['Active Enrollments', allEnrollments.filter(e => e.is_active).length],
@@ -460,86 +457,86 @@ const ReportsPage = () => {
     },
   ];
 
-const quotaUtilizationColumns = [
-  {
-    title: 'Department',
-    dataIndex: 'department_name',
-    align: 'center',
-    key: 'department_name',
-    width: 120,
-    render: (value) =>
-      value && value.includes(' - ')
-        ? value.split(' - ')[1]
-        : (value || '-'),
-  },
-  {
-    title: 'Drug Name',
-    dataIndex: 'drug_name',
-    key: 'drug_name',
-    width: 180,
-  },
-  {
-    title: 'Quota',
-    dataIndex: 'quota_number',
-    align: 'center',
-    key: 'quota_number',
-    width: 60,
-  },
-  {
-    title: 'Active Patients',
-    dataIndex: 'active_patients',
-    align: 'center',
-    key: 'active_patients',
-    width: 60,
-  },
-  {
-    title: 'Available Slots',
-    dataIndex: 'available_slots',
-    align: 'center',
-    key: 'available_slots',
-    width: 60,
-  },
-  {
-    title: 'Utilization %',
-    dataIndex: 'utilization_percentage',
-    key: 'utilization_percentage',
-    align: 'center',
-    width: 120,
-    render: (value) => {
-      const percentage = value || 0;
-      let color = '#52c41a';
-      if (percentage >= 90) color = '#ff4d4f';
-      else if (percentage >= 75) color = '#faad14';
+  const quotaUtilizationColumns = [
+    {
+      title: 'Department',
+      dataIndex: 'department_name',
+      align: 'center',
+      key: 'department_name',
+      width: 120,
+      render: (value) =>
+        value && value.includes(' - ')
+          ? value.split(' - ')[1]
+          : (value || '-'),
+    },
+    {
+      title: 'Drug Name',
+      dataIndex: 'drug_name',
+      key: 'drug_name',
+      width: 180,
+    },
+    {
+      title: 'Quota',
+      dataIndex: 'quota_number',
+      align: 'center',
+      key: 'quota_number',
+      width: 60,
+    },
+    {
+      title: 'Active Patients',
+      dataIndex: 'active_patients',
+      align: 'center',
+      key: 'active_patients',
+      width: 60,
+    },
+    {
+      title: 'Available Slots',
+      dataIndex: 'available_slots',
+      align: 'center',
+      key: 'available_slots',
+      width: 60,
+    },
+    {
+      title: 'Utilization %',
+      dataIndex: 'utilization_percentage',
+      key: 'utilization_percentage',
+      align: 'center',
+      width: 120,
+      render: (value) => {
+        const percentage = value || 0;
+        let color = '#52c41a';
+        if (percentage >= 90) color = '#ff4d4f';
+        else if (percentage >= 75) color = '#faad14';
 
-      return (
-        <Progress
-          percent={percentage}
-          strokeColor={color}
-          format={(percent) => (
-            <span style={{ fontSize: '12px', color  }}>{percent}%</span>
-          )}
-        />
-      );
+        return (
+          <Progress
+            percent={percentage}
+            strokeColor={color}
+            format={(percent) => (
+              <span style={{ fontSize: '12px', color }}>{percent}%</span>
+            )}
+          />
+        );
+      },
     },
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    align: 'center',
-    key: 'status',
-    width: 80,
-    render: (status) => {
-      const color =
-        {
-          FULL: 'red',
-          HIGH: 'orange',
-          MEDIUM: 'blue',
-          LOW: 'green',
-        }[status] || 'default';
-      return <span style={{ color }}>{status}</span>;
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      align: 'center',
+      key: 'status',
+      width: 80,
+      render: (status) => {
+        const color =
+          {
+            FULL: 'red',
+            HIGH: 'orange',
+            MEDIUM: 'blue',
+            LOW: 'green',
+          }[status] || 'default';
+        return <span style={{ color }}>{status}</span>;
+      },
     },
-  },
-];
+  ];
 
   const defaultersColumns = [
     {
